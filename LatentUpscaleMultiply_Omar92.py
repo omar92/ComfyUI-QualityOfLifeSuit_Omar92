@@ -11,46 +11,44 @@ import comfy.samplers
 import comfy.sd
 import comfy.utils
 import model_management
+
+
 def before_node_execution():
     model_management.throw_exception_if_processing_interrupted()
+
+
 def interrupt_processing(value=True):
     model_management.interrupt_current_processing(value)
+
 
 class LatentUpscaleMultiply:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
     crop_methods = ["disabled", "center"]
 
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "samples": ("LATENT",),
-                "upscale_method": (s.upscale_methods,),
-                "WidthMul": (
-                    "FLOAT",
-                    {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.1},
-                ),
-                "HeightMul": (
-                    "FLOAT",
-                    {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.1},
-                ),
-                "crop": (s.crop_methods,),
+                "upscale_method": (cls.upscale_methods,),
+                "WidthMul": ("FLOAT", {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.1}),
+                "HeightMul": ("FLOAT", {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.1}),
+                "crop": (cls.crop_methods,),
             }
         }
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "upscale"
-
     CATEGORY = "O/latent"
 
     def upscale(self, samples, upscale_method, WidthMul, HeightMul, crop):
-        _s = samples.copy()
-        _x = samples["samples"].shape[3]
-        _y = samples["samples"].shape[2]
+        s = samples.copy()
+        x = samples["samples"].shape[3]
+        y = samples["samples"].shape[2]
 
-        new_x = int(_x * WidthMul)
-        new_y = int(_y * HeightMul)
-        print("upscale from ("+ str(_x * 8)+ ","+ str(_y * 8)+ ") to ("+ str(new_x * 8)+ ","+ str(new_y * 8)+ ")")
+        new_x = int(x * WidthMul)
+        new_y = int(y * HeightMul)
+        print(f"upscale from ({x*8},{y*8}) to ({new_x*8},{new_y*8})")
 
         def enforce_mul_of_64(d):
             leftover = d % 8
@@ -58,10 +56,10 @@ class LatentUpscaleMultiply:
                 d += 8 - leftover
             return d
 
-        _s["samples"] = comfy.utils.common_upscale(
+        s["samples"] = comfy.utils.common_upscale(
             samples["samples"], enforce_mul_of_64(new_x), enforce_mul_of_64(new_y), upscale_method, crop
         )
-        return (_s,)
+        return (s,)
 
 
 NODE_CLASS_MAPPINGS = {"LatentUpscaleMultiply": LatentUpscaleMultiply}

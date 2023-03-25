@@ -2,52 +2,46 @@
 # https://civitai.com/user/omar92
 # discord: Omar92#3374
 
-import sys, os
-import torch
+import os
 import numpy as np
+import torch
 from PIL import Image, ImageFont
 
 class O_String:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {"required": {"string": ("STRING", {"multiline": True})}}
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "ostr"
     CATEGORY = "O/string"
 
-    def ostr(self, string):
-        return (
-            {
-                "string": string,
-            },
-        )
+    @staticmethod
+    def ostr(string):
+        return ({"string": string},)
 
 class concat_String:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {"required": {
             "string1": ("STR",),
             "string2": ("STR",)
-            }}
+        }}
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
     CATEGORY = "O/string"
 
-    def fun(self, string1,string2):
-        return (
-            {
-                "string": (string1["string"]+string2["string"]),
-            },
-        )
+    @staticmethod
+    def fun(string1, string2):
+        return ({"string": string1["string"] + string2["string"]},)
 
 class trim_String:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {"required": {
             "string": ("STR",),
-            }}
+        }}
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
@@ -62,57 +56,50 @@ class trim_String:
 
 class replace_String:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {"required": {
             "string": ("STR",),
             "old": ("STRING", {"multiline": False}),
             "new": ("STRING", {"multiline": False})
-            }}
+        }}
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
     CATEGORY = "O/string"
 
-    def fun(self, string,old,new):
-        return (
-            {
-                "string": (string["string"].replace(old, new)),
-            },
-        )
+    @staticmethod
+    def fun(string, old, new):
+        return ({"string": string["string"].replace(old, new)},)
     
 class replace_String_advanced:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {"required": {
             "string": ("STR",),
             "old": ("STR",),
             "new": ("STR",),
-            }}
+        }}
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
     CATEGORY = "O/string"
 
-    def fun(self, string,old,new):
-        return (
-            {
-                "string": (string["string"].replace(old["string"], new["string"])),
-            },
-        )
+    @staticmethod
+    def fun(string, old, new):
+        return ({"string": string["string"].replace(old["string"], new["string"])},)
 
 class DebugString:
     @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {"string": ("STR",)}
-        }
+    def INPUT_TYPES(cls):
+        return {"required": {"string": ("STR",)}}
 
     RETURN_TYPES = ()
     FUNCTION = "debug_string"
     OUTPUT_NODE = True
     CATEGORY = "O/string"
 
-    def debug_string(self, string):
+    @staticmethod
+    def debug_string(string):
         print("debugString:", string["string"])
         return ()
 
@@ -168,7 +155,6 @@ class CLIPStringEncode:
     def encode(self,string, clip):
         return ([[clip.encode(string["string"]), {}]], )
 
-    
 
 NODE_CLASS_MAPPINGS = {
     "String _O": O_String,
@@ -180,3 +166,4 @@ NODE_CLASS_MAPPINGS = {
     "string2Image _O": string2Image,
     "CLIPStringEncode _O": CLIPStringEncode,
 }
+
