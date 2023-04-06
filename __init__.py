@@ -2,8 +2,8 @@
 
 # set to False to disable auto update
 AutoUpdate = True  
-# always download last stable version
-version = "main"   
+# always download last development version
+version = "dev"   
 
 #----------------------------------------------------------
 #update logic
