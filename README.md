@@ -9,6 +9,11 @@ Download the zip file.
 Extract to ..\ComfyUI\custom_nodes.
 Restart ComfyUI if it was running (reloading the web is not enough).
 You will find my nodes under the new group O/....
+
+## How to update
+- quality of life will auto update each time you run comfyUI
+- if you want to stop autoUpdate edit  __init__.py  and set autoUpdate = false
+
 ## Current nodes
 ## ChatGPT
 This node harnesses the power of chatGPT, an advanced language model that can generate detailed image descriptions from a small input.

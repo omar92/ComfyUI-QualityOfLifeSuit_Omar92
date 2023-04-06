@@ -54,12 +54,12 @@ if f_disp:
 # region global
 PACKAGE_NAME = '\033[33mQualityOfLifeSuit_Omar92:\033[0m'
 NODE_FILE = os.path.abspath(__file__)
-CUSTOM_NODES_DIR = (os.path.dirname(os.path.dirname(NODE_FILE))
+SUIT_DIR = (os.path.dirname(os.path.dirname(NODE_FILE))
                     if os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92'
                     or os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92-dev'
                     else os.path.dirname(NODE_FILE))
-
-print(f'\033[33mQualityOfLifeSuit_Omar92_DIR:\033[0m {CUSTOM_NODES_DIR}')
+SUIT_DIR = SUIT_DIR+"\\.."
+print(f'\033[33mQualityOfLifeSuit_Omar92_DIR:\033[0m {SUIT_DIR}')
 
 
 def enforce_mul_of_64(d):
@@ -89,8 +89,12 @@ def install_openai():
 
 def get_api_key(api_key_file):
     # Helper function to get the API key from the file
-    with open(CUSTOM_NODES_DIR+"\\"+api_key_file, 'r') as f:  # Open the file and read the API key
-        api_key = f.read().strip()
+    try:
+        with open(SUIT_DIR+"\\"+api_key_file, 'r') as f:  # Open the file and read the API key
+            api_key = f.read().strip()
+    except:
+        print("Error: OpenAI API key file not found OpenAI features wont work for you")
+        return ""
     return api_key  # Return the API key
 
 
@@ -110,7 +114,7 @@ def get_openAI_models():
     try:
         models = openai.Model.list()  # Get the list of models
     except:
-        print("Error: OpenAI API key is invalid")
+        print("Error: OpenAI API key is invalid OpenAI features wont work for you")
         return []
 
     openAI_models = []  # Create a list for the chat models
@@ -748,8 +752,7 @@ def laodFonts():
     if (fonts != None):
         return fonts
     try:
-        fonts_filepath = os.path.join(os.path.dirname(
-            os.path.realpath(__file__)), "fonts")
+        fonts_filepath = os.path.join(SUIT_DIR, "fonts")
         fonts = []
         for file in os.listdir(fonts_filepath):
             if file.endswith(".ttf") or file.endswith(".otf") or file.endswith(".ttc") or file.endswith(".TTF") or file.endswith(".OTF") or file.endswith(".TTC"):
