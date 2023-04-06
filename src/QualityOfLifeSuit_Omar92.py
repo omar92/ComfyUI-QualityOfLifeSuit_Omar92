@@ -87,11 +87,14 @@ def install_openai():
         pip.main(['install', 'openai'])
 
 
-def get_api_key(api_key_file):
+def get_api_key():
     # Helper function to get the API key from the file
     try:
-        with open(SUIT_DIR+"\\"+api_key_file, 'r') as f:  # Open the file and read the API key
-            api_key = f.read().strip()
+        #open config file  
+        configPath  =  os.path.join(SUIT_DIR, "config.json")
+        with open(configPath, 'r') as f:  # Open the file and read the API key
+            config = json.load(f)
+        api_key = config["openAI_API_Key"]
     except:
         print("Error: OpenAI API key file not found OpenAI features wont work for you")
         return ""
@@ -109,7 +112,7 @@ def get_openAI_models():
     install_openai()
     import openai
     # Set the API key for the OpenAI module
-    openai.api_key = get_api_key("api_key.txt")
+    openai.api_key = get_api_key()
 
     try:
         models = openai.Model.list()  # Get the list of models
@@ -151,8 +154,6 @@ class O_ChatGPT_O:
             "required": {
                 # Multiline string input for the prompt
                 "prompt": ("STRING", {"multiline": True}),
-                # File input for the API key
-                "api_key_file": ("STRING", {"file": True, "default": "api_key.txt"}),
                 "model": (get_gpt_models(), {"default": "gpt-3.5-turbo"}),
             },
             "optional": {
@@ -164,12 +165,12 @@ class O_ChatGPT_O:
     FUNCTION = "fun"  # Define the function name for the node
     CATEGORY = "O >>/OpenAI >>"  # Define the category for the node
 
-    def fun(self, api_key_file, model, prompt, seed):
+    def fun(self,  model, prompt, seed):
         install_openai()  # Install the OpenAI module if not already installed
         import openai  # Import the OpenAI module
 
         # Get the API key from the file
-        api_key = get_api_key(api_key_file)
+        api_key = get_api_key()
 
         openai.api_key = api_key  # Set the API key for the OpenAI module
 
@@ -196,20 +197,18 @@ class load_openAI_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                # File input for the API key
-                "api_key_file": ("STRING", {"file": True, "default": "api_key.txt"})
             }
         }
     RETURN_TYPES = ("OPENAI",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
     CATEGORY = "O >>/OpenAI >>/Advanced >>"  # Define the category for the node
 
-    def fun(self, api_key_file):
+    def fun(self):
         install_openai()  # Install the OpenAI module if not already installed
         import openai  # Import the OpenAI module
 
         # Get the API key from the file
-        api_key = get_api_key(api_key_file)
+        api_key = get_api_key()
         openai.api_key = api_key  # Set the API key for the OpenAI module
 
         return (
