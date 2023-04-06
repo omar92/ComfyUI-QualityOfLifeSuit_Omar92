@@ -163,7 +163,34 @@ class openAi_chat_message_STR_deprecated:
 # endregion ChatGPT
 # region Image
 
+class openAi_chat_messages_Combine_deprecated:
+    """
+     compine chat messages into 1 tuple
+    """
+    # Define the input types for the node
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "message1": ("OPENAI_CHAT_MESSAGES", ),
+                "message2": ("OPENAI_CHAT_MESSAGES", ),
+            }
+        }
+    # Define the return type of the node
+    RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
+    FUNCTION = "fun"  # Define the function name for the node
+    # Define the category for the node
+    CATEGORY = "O >>/deprecated >>/OpenAI >>/Advanced >>/ChatGPT >>"
 
+    def fun(self, message1, message2):
+        messages = message1["messages"] + \
+            message2["messages"]  # compine messages
+
+        return (
+            {
+                "messages": messages
+            },
+        )
 class openAi_Image_create_deprecated:
     """
     create image using openai 
@@ -448,7 +475,7 @@ class replace_String_advanced_deprecated:
 # endregion
 
 
-class LatentUpscaleMultiply:
+class LatentUpscaleMultiply_deprecated:
     """
     Upscale the latent code by multiplying the width and height by a factor
     """
@@ -500,6 +527,7 @@ NODE_CLASS_MAPPINGS = {
     # deprecated
     "ChatGPT _O": O_ChatGPT_deprecated,
     "Chat_Message_fromString _O": openAi_chat_message_STR_deprecated,
+    "compine_chat_messages _O": openAi_chat_messages_Combine_deprecated,
     "Chat_Completion _O": openAi_chat_completion_deprecated,
     "create_image _O": openAi_Image_create_deprecated,
     "String _O": O_String_deprecated,
@@ -511,5 +539,5 @@ NODE_CLASS_MAPPINGS = {
     "string2Image _O": string2Image_deprecated,
     "CLIPStringEncode _O": CLIPStringEncode_deprecated,
     "CLIPStringEncode _O": CLIPStringEncode_deprecated,
-    "LatentUpscaleMultiply": LatentUpscaleMultiply,
+    "LatentUpscaleMultiply": LatentUpscaleMultiply_deprecated,
 }
