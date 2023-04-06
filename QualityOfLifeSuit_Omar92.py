@@ -62,7 +62,11 @@ def install_openai():
 
 def get_api_key(api_key_file):
     # Helper function to get the API key from the file
+    
+    cwd = os.getcwd()  # Get the current working directory
     custom_nodes_dir = 'ComfyUI/custom_nodes/'  # Define the directory for the file
+    custom_nodes_dir = os.path.join(cwd, custom_nodes_dir)  # Join the directory with the current working directory
+    
     with open(custom_nodes_dir+api_key_file, 'r') as f:  # Open the file and read the API key
         api_key = f.read().strip()
     return api_key  # Return the API key
