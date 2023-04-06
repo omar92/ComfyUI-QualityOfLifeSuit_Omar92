@@ -746,7 +746,7 @@ class DebugText_O:
 fonts = None
 
 
-def laodFonts():
+def loadFonts():
 
     global fonts
     if (fonts != None):
@@ -772,15 +772,14 @@ class Text2Image_O:
     """
 
     def __init__(self):
-        self.font_filepath = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "fonts")
+        self.font_filepath = os.path.join(SUIT_DIR, "fonts")
 
     @classmethod
     def INPUT_TYPES(s):
         return {
             "required": {
                 "text": ("STRING", {"multiline": True}),
-                "font": (laodFonts(), {"default": laodFonts()[0], }),
+                "font": (loadFonts(), {"default": loadFonts()[0], }),
                 "size": ("INT", {"default": 36, "min": 0, "max": 255, "step": 1}),
                 "font_R": ("INT", {"default": 0, "min": 0, "max": 255, "step": 1}),
                 "font_G": ("INT", {"default": 0, "min": 0, "max": 255, "step": 1}),
