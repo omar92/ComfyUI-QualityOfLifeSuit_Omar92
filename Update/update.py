@@ -48,7 +48,7 @@ def install_pygit2():
         import pip
         pip.main(['install', 'pygit2'])
 def update(repoPath = "", branch_name="main" ):
-    print(f"Updating Quality of Life Suit...")
+    print(f"Updating: Quality of Life Suit...")
 
     install_pygit2()
     import pygit2
@@ -72,7 +72,6 @@ def update(repoPath = "", branch_name="main" ):
 
     #print("pulling latest changes")
     pull(pygit2,repo, branch=branch_name)
-    print(f"Quality of Life Suit updated successfully...")
 
+    print(f"done: Quality of Life Suit, updated successfully...")
 
-    print("Done!")

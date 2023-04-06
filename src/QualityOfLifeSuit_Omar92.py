@@ -772,8 +772,7 @@ class Text2Image_O:
     """
 
     def __init__(self):
-        self.font_filepath = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "fonts")
+        self.font_filepath = os.path.join(SUIT_DIR, "fonts")
 
     @classmethod
     def INPUT_TYPES(s):
