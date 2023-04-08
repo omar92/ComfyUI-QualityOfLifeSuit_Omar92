@@ -863,9 +863,9 @@ def laodNSP():
     if (nspterminology != None):
         return nspterminology
     # Fetch the NSP Pantry
-    local_pantry = os.getcwd()+'/ComfyUI/custom_nodes/nsp_pantry.json'
+    local_pantry = os.path.join(SUIT_DIR, "nsp_pantry.json")
     if not os.path.exists(local_pantry):
-        print(f'{PACKAGE_NAME}:downlaoding NSP')
+        print(f'{PACKAGE_NAME}:downloading NSP')
         response = urlopen(
             'https://raw.githubusercontent.com/WASasquatch/noodle-soup-prompts/main/nsp_pantry.json')
         tmp_pantry = json.loads(response.read())
