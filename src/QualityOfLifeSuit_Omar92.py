@@ -54,11 +54,20 @@ if f_disp:
 # region global
 PACKAGE_NAME = '\033[33mQualityOfLifeSuit_Omar92:\033[0m'
 NODE_FILE = os.path.abspath(__file__)
+
+'''
 SUIT_DIR = (os.path.dirname(os.path.dirname(NODE_FILE))
                     if os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92'
                     or os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92-dev'
                     else os.path.dirname(NODE_FILE))
 SUIT_DIR = SUIT_DIR+"\\.."
+'''
+
+SUIT_DIR = os.path.dirname(NODE_FILE)
+if SUIT_DIR != 'QualityOfLifeSuit_Omar92' or SUIT_DIR == 'QualityOfLifeSuit_Omar92-dev':
+    SUIT_DIR = os.path.dirname(SUIT_DIR)
+
+
 print(f'\033[33mQualityOfLifeSuit_Omar92_DIR:\033[0m {SUIT_DIR}')
 
 
@@ -96,6 +105,9 @@ def get_api_key():
             config = json.load(f)
         api_key = config["openAI_API_Key"]
     except:
+        import traceback
+        traceback.print_exc()
+        
         print("Error: OpenAI API key file not found OpenAI features wont work for you")
         return ""
     return api_key  # Return the API key
