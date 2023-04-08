@@ -27,7 +27,7 @@ legacy_nodes = ['ChatGPT_Omar92.py',
 legacy_nodes_found = []
 f_disp = False
 for f in legacy_nodes:
-    node_path_dir = os.getcwd()+'/ComfyUI/custom_nodes/'
+    node_path_dir = os.getcwd()+'./custom_nodes/'
     file = f'{node_path_dir}{f}'
     if os.path.exists(file):
         import zipfile
@@ -886,6 +886,7 @@ def laodNSP():
         return nspterminology
     # Fetch the NSP Pantry
     local_pantry = os.path.join(SUIT_DIR, "nsp_pantry.json")
+
     if not os.path.exists(local_pantry):
         print(f'{PACKAGE_NAME}:downloading NSP')
         response = urlopen(
