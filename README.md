@@ -1,3 +1,5 @@
+#kindly when do pull requests , make it on dev branch if possible -- and thanks so much for every one that helped me 
+
 # ComfyUI-extra-nodes - quality of life
 Extra nodes to be used in ComfyUI, including a new ChatGPT node for generating natural language responses.
 
