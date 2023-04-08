@@ -74,7 +74,7 @@ class O_ChatGPT_deprecated:
 
     # Helper function to get the API key from the file
     def get_api_key(self, api_key_file):
-        custom_nodes_dir = 'ComfyUI/custom_nodes/'  # Define the directory for the file
+        custom_nodes_dir = './custom_nodes/'  # Define the directory for the file
         with open(custom_nodes_dir+api_key_file, 'r') as f:  # Open the file and read the API key
             api_key = f.read().strip()
         return api_key  # Return the API key
@@ -128,7 +128,7 @@ class O_ChatGPT_deprecated:
 
     # Helper function to get the API key from the file
     def get_api_key(self, api_key_file):
-        custom_nodes_dir = 'ComfyUI/custom_nodes/'  # Define the directory for the file
+        custom_nodes_dir = './custom_nodes/'  # Define the directory for the file
         with open(custom_nodes_dir+api_key_file, 'r') as f:  # Open the file and read the API key
             api_key = f.read().strip()
         return api_key  # Return the API key
