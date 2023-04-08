@@ -622,6 +622,48 @@ class LatentUpscaleFactor_O:
         )
         return (s,)
 
+class LatentUpscaleFactorSimple_O:
+    """
+    Upscale the latent code by multiplying the width and height by a factor
+    """
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "samples": ("LATENT",),
+                "upscale_method": (cls.upscale_methods,),
+                "factor": ("FLOAT", {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.28125}),
+                "crop": (cls.crop_methods,),
+            }
+        }
+
+    RETURN_TYPES = ("LATENT",)
+    FUNCTION = "upscale"
+    CATEGORY = "O >>/latent >>"
+
+    def upscale(self, samples, upscale_method, factor, crop):
+        s = samples.copy()
+        x = samples["samples"].shape[3]
+        y = samples["samples"].shape[2]
+
+        new_x = int(x * factor)
+        new_y = int(y * factor)
+
+        if (new_x > MAX_RESOLUTION):
+            new_x = MAX_RESOLUTION
+        if (new_y > MAX_RESOLUTION):
+            new_y = MAX_RESOLUTION
+
+        print(f'{PACKAGE_NAME}:upscale from ({x*8},{y*8}) to ({new_x*8},{new_y*8})')
+
+        s["samples"] = comfy.utils.common_upscale(
+            samples["samples"], enforce_mul_of_64(
+                new_x), enforce_mul_of_64(new_y), upscale_method, crop
+        )
+        return (s,)
 
 class SelectLatentImage_O:
     """
@@ -1379,6 +1421,7 @@ NODE_CLASS_MAPPINGS = {
     "variation_image _O": openAi_Image_variation_O,
     # latentTools------------------------------------------
     "LatentUpscaleFactor _O": LatentUpscaleFactor_O,
+    "LatentUpscaleFactorSimple _O": LatentUpscaleFactorSimple_O,
     "selectLatentFromBatch _O": SelectLatentImage_O,
     # "VAEDecodeParallel _O": VAEDecodeParallel_O, # coming soon
     # StringTools------------------------------------------
