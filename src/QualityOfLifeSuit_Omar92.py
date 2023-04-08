@@ -333,7 +333,7 @@ class DebugOpenAIChatMEssages_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O >>/debug >>/OpenAI >>/Advanced >>/ChatGPT >>"
 
     def fun(self, messages):
         print(f'{PACKAGE_NAME}:OpenAIChatMEssages', messages["messages"])
@@ -357,7 +357,7 @@ class DebugOpenAIChatCompletion_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O >>/debug >>/OpenAI >>/Advanced >>/ChatGPT >>"
 
     def fun(self, completion):
         print(f'{PACKAGE_NAME}:OpenAIChatCompletion:', completion)
@@ -720,31 +720,56 @@ class seed2String_O:
         return (str(seed))
 
 
-class DebugText_O:
-    """
-    This node will write a text to the console
-    """
+class saveTextToFile_O:
+    def __init__(self):
+        pass
+
     @classmethod
     def INPUT_TYPES(cls):
-        return {"required": {
-            "text": ("STRING", {"multiline": True}),
-            "prefix": ("STRING", {"default": "debug", "multiline": False}),
-        }}
+        return {
+            "required": {
+                "text": ("STRING", {"default": '', "multiline": False}),
+                "filename": ("STRING", {"default": "log.txt", "multiline": False}),
+            },
+            "optional": {
+                "append": (["true", "false"], {"default": True})
+            }
+        }
 
-    RETURN_TYPES = ()
-    FUNCTION = "debug_string"
     OUTPUT_NODE = True
+    RETURN_TYPES = ()
+    FUNCTION = "fun"
     CATEGORY = "O >>/text >>"
 
-    @staticmethod
-    def debug_string(text, prefix):
-        print(f'{PACKAGE_NAME}:{prefix}:{text}')
-        return ()
+    def fun(self, text, filename, append):
+        # append dateTime
+        current_time = time.strftime("%d/%m/%Y %H:%M:%S")  # dd/mm/YY H:M:S
+        textToSave = f'{current_time}:  \n'
+        # append text in new line
+        textToSave += f' {text}  \n\n'
+
+        self.saveTextToFile(textToSave, filename, append)
+
+        return (textToSave, )
+    
+    def saveTextToFile(self, text, filename, append):
+        saveDir = os.path.join(SUIT_DIR, "output")
+        saveFile = os.path.join(saveDir, filename)
+
+        # Create directory if it does not exist
+        if not os.path.exists(saveDir):
+            os.makedirs(saveDir)
+        
+        # Write to file
+        mode = "a" if append else "w"
+        try:
+            with open(saveFile, mode, encoding="utf-8") as f:
+                f.write(text)
+        except OSError as e:
+            print(f'{PACKAGE_NAME}:error writing to file {saveFile}')
 
 
 fonts = None
-
-
 def loadFonts():
 
     global fonts
@@ -763,8 +788,6 @@ def loadFonts():
             print(f'{PACKAGE_NAME}:no fonts found in {fonts_filepath}')
             fonts = ["Arial.ttf"]
     return fonts
-
-
 class Text2Image_O:
     """
     This node will convert a string to an image
@@ -852,20 +875,19 @@ class Text2Image_O:
         image_np = np.array(image).astype(np.float32) / 255.0
         image_tensor = torch.from_numpy(image_np).unsqueeze(0)
         return image_tensor, {"ui": {"images": image_tensor}}
+
 # region text/NSP
 
-
 nspterminology = None  # Cache the NSP terminology
-
 
 def laodNSP():
     global nspterminology
     if (nspterminology != None):
         return nspterminology
     # Fetch the NSP Pantry
-    local_pantry = os.getcwd()+'/ComfyUI/custom_nodes/nsp_pantry.json'
+    local_pantry = os.path.join(SUIT_DIR, "nsp_pantry.json")
     if not os.path.exists(local_pantry):
-        print(f'{PACKAGE_NAME}:downlaoding NSP')
+        print(f'{PACKAGE_NAME}:downloading NSP')
         response = urlopen(
             'https://raw.githubusercontent.com/WASasquatch/noodle-soup-prompts/main/nsp_pantry.json')
         tmp_pantry = json.loads(response.read())
@@ -881,7 +903,6 @@ def laodNSP():
 
     print(f'{PACKAGE_NAME}:NSP ready')
     return nspterminology
-
 
 class RandomNSP_O:
     @classmethod
@@ -913,7 +934,83 @@ class RandomNSP_O:
         result = random.choice(nspterminology[terminology])
         return (result, {"ui": {"STRING": result}})
 
+class ConcatRandomNSP_O:
+    @classmethod
+    def laodCategories(s):
+        nspterminology = laodNSP()
+        terminologies = []
+        for term in nspterminology:
+            terminologies.append(term)
+
+        return (terminologies)
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {
+            "text": ("STRING", {"multiline": False}),
+            "terminology": (s.laodCategories(),),
+            "separator": ("STRING", {"multiline": False, "default": ","}),
+            "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+        }}
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "fun"
+    CATEGORY = "O >>/text >>/NSP >>"
+
+    def fun(self,text, terminology,separator, seed):
+
+        nspterminology = laodNSP()
+        # Set the seed
+        random.seed(seed)
+
+        result = random.choice(nspterminology[terminology])
+        
+        return (text+separator+result+separator, {"ui": {"STRING": result}})
 # endregion text/NSP
+
+#region debug text 
+class DebugText_O:
+    """
+    This node will write a text to the console
+    """
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "text": ("STRING", {"multiline": False}),
+            "prefix": ("STRING", {"default": "debug", "multiline": False}),
+        }}
+
+    RETURN_TYPES = ()
+    FUNCTION = "debug_string"
+    OUTPUT_NODE = True
+    CATEGORY = "O >>/debug >>/text >>"
+
+    @staticmethod
+    def debug_string(text, prefix):
+        print(f'{PACKAGE_NAME}:{prefix}:{text}')
+        return ()
+
+class DebugTextRoute_O:
+    """
+    This node will write a text to the console
+    """
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "text": ("STRING", {"multiline": False}),
+            "prefix": ("STRING", {"default": "debug", "multiline": False}),
+        }}
+
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "debug_string"
+    CATEGORY = "O >>/debug >>/text >>"
+
+    @staticmethod
+    def debug_string(text, prefix):
+        print(f'{PACKAGE_NAME}:{prefix}:{text}')
+        return (text,)
+
+
+#endregion
 
 # region text/operations
 
@@ -926,8 +1023,8 @@ class concat_text_O:
     def INPUT_TYPES(cls):
         return {"required": {
             "text1": ("STRING", {"multiline": True}),
+            "text2": ("STRING", {"multiline": True}),
             "separator": ("STRING", {"multiline": False, "default": ","}),
-            "text2": ("STRING", {"multiline": True})
         }}
 
     RETURN_TYPES = ("STRING",)
@@ -946,7 +1043,7 @@ class trim_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": True}),
+            "text": ("STRING", {"multiline": False}),
         }}
 
     RETURN_TYPES = ("STRING",)
@@ -1237,8 +1334,6 @@ NODE_CLASS_MAPPINGS = {
     "Chat_Message _O": openAi_chat_message_O,
     "combine_chat_messages _O": openAi_chat_messages_Combine_O,
     "Chat completion _O": openAi_chat_completion_O,
-    "debug messages_O": DebugOpenAIChatMEssages_O,
-    "debug Completeion _O": DebugOpenAIChatCompletion_O,
     # openAiTools > Advanced > image
     "create image _O": openAi_Image_create_O,
     # "Edit_image _O": openAi_Image_Edit, # coming soon
@@ -1248,11 +1343,12 @@ NODE_CLASS_MAPPINGS = {
     "selectLatentFromBatch _O": SelectLatentImage_O,
     # "VAEDecodeParallel _O": VAEDecodeParallel_O, # coming soon
     # StringTools------------------------------------------
-    "Debug Text _O": DebugText_O,
     "RandomNSP _O": RandomNSP_O,
+    "ConcatRandomNSP_O": ConcatRandomNSP_O,
     "Concat Text _O": concat_text_O,
     "Trim Text _O": trim_text_O,
     "Replace Text _O": replace_text_O,
+    "saveTextToFile _O": saveTextToFile_O,
     "Text2Image _O": Text2Image_O,
     # ImageTools------------------------------------------
     "ImageScaleFactor _O": ImageScaleFactor_O,
@@ -1262,6 +1358,11 @@ NODE_CLASS_MAPPINGS = {
     "floatToInt _O": floatToInt_O,
     "intToFloat _O": intToFloat_O,
     "floatToText _O": floatToText_O,
+    # debug------------------------------------------
+    "debug messages_O": DebugOpenAIChatMEssages_O,
+    "debug Completeion _O": DebugOpenAIChatCompletion_O,
+    "Debug Text _O": DebugText_O,
+    "Debug Text route _O": DebugTextRoute_O,
     # Utils------------------------------------------
     "Note _O": Note_O,
     "Text _O": Text_O,
