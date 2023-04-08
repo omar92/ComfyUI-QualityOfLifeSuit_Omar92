@@ -1079,7 +1079,45 @@ class replace_text_O:
 
 # region Image
 
+class ImageScaleFactorSimple_O:
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+    toggle = ["enabled", "disabled"]
 
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"image": ("IMAGE",),
+                             "upscale_method": (s.upscale_methods,),
+                             "Factor": ("FLOAT", {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.28125}),
+                             "MulOf46": (s.toggle, {"default": "enabled"}),
+                             "crop": (s.crop_methods,)
+                             }}
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "upscale"
+
+    CATEGORY = "O >>/image >>"
+
+    def upscale(self, image, upscale_method, Factor, crop, MulOf46):
+        samples = image.movedim(-1, 1)
+        width = Factor * samples.shape[2]
+        height = Factor * samples.shape[3]
+        if (width > MAX_RESOLUTION):
+            width = MAX_RESOLUTION
+        if (height > MAX_RESOLUTION):
+            height = MAX_RESOLUTION
+
+        if (MulOf46 == "enabled"):
+            width = enforce_mul_of_64(width)
+            height = enforce_mul_of_64(height)
+
+        width = int(width)
+        height = int(height)
+        print(
+            f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
+        s = comfy.utils.common_upscale(
+            samples, width, height, upscale_method, crop)
+        s = s.movedim(1, -1)
+        return (s,)
 class ImageScaleFactor_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
     crop_methods = ["disabled", "center"]
@@ -1353,6 +1391,7 @@ NODE_CLASS_MAPPINGS = {
     "Text2Image _O": Text2Image_O,
     # ImageTools------------------------------------------
     "ImageScaleFactor _O": ImageScaleFactor_O,
+    "ImageScaleFactorSimple _O": ImageScaleFactorSimple_O,
     # NumberTools------------------------------------------
     "Equation1param _O": applyEquation1param_O,
     "Equation2params _O": applyEquation2params_O,
