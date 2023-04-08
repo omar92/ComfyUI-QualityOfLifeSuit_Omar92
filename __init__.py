@@ -10,7 +10,7 @@ if not os.path.isfile(os.path.join(os.path.dirname(os.path.realpath(__file__)),"
     #create config file
     config = {
         "autoUpdate": True,
-        "branch": "main",
+        "branch": "v2.1.X",
         "openAI_API_Key": "sk-#########################################"
     }
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"config.json"), "w") as f:
@@ -26,7 +26,7 @@ if "autoUpdate" not in config:
 
 #check if version is set
 if "version" not in config:
-    config["branch"] = "main"
+    config["branch"] = "v2.1.X"
 
 
 if config["autoUpdate"] == True:
