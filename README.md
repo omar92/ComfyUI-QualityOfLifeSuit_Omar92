@@ -23,7 +23,7 @@ The file looks like this :
 "openAI_API_Key": "sk-#################################"
 }
 
-- if you want to stop autoUpdate edit  config.json set "autoUpdate": false
+- if you want to stop autoUpdate edit  `config.json` set "autoUpdate": false
 
 ## Current nodes
 ## openAI suite
@@ -31,7 +31,7 @@ The file looks like this :
 ## ChatGPT simple
 This node harnesses the power of chatGPT, an advanced language model that can generate detailed image descriptions from a small input.
 - you need to have  OpenAI API key , which you can find at https://beta.openai.com/docs/developer-apis/overview
-- Once you have your API key, add it to the config.json file
+- Once you have your API key, add it to the `config.json` file
 - I have made it a separate file, so that the API key doesn't get embedded in the generated images.
 
 ## advanced openAI
