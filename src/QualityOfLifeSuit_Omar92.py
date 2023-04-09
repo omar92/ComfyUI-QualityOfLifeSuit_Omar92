@@ -1154,8 +1154,8 @@ class ImageScaleFactorSimple_O:
 
     def upscale(self, image, upscale_method, Factor, crop, MulOf46):
         samples = image.movedim(-1, 1)
-        width = Factor * samples.shape[2]
-        height = Factor * samples.shape[3]
+        height = Factor * samples.shape[2]
+        width = Factor * samples.shape[3]
         if (width > MAX_RESOLUTION):
             width = MAX_RESOLUTION
         if (height > MAX_RESOLUTION):
@@ -1196,8 +1196,8 @@ class ImageScaleFactor_O:
 
     def upscale(self, image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
         samples = image.movedim(-1, 1)
-        width = WidthFactor * samples.shape[2]
-        height = HeightFactor * samples.shape[3]
+        height = HeightFactor * samples.shape[2]
+        width = WidthFactor * samples.shape[3]
         if (width > MAX_RESOLUTION):
             width = MAX_RESOLUTION
         if (height > MAX_RESOLUTION):
