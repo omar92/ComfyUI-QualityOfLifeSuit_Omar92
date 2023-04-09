@@ -55,9 +55,9 @@ if f_disp:
 PACKAGE_NAME = '\033[33mQualityOfLifeSuit_Omar92:\033[0m'
 NODE_FILE = os.path.abspath(__file__)
 SUIT_DIR = (os.path.dirname(os.path.dirname(NODE_FILE))
-                    if os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92'
-                    or os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92-dev'
-                    else os.path.dirname(NODE_FILE))
+            if os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92'
+            or os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92-dev'
+            else os.path.dirname(NODE_FILE))
 SUIT_DIR = SUIT_DIR+"\\.."
 print(f'\033[33mQualityOfLifeSuit_Omar92_DIR:\033[0m {SUIT_DIR}')
 
@@ -90,8 +90,8 @@ def install_openai():
 def get_api_key():
     # Helper function to get the API key from the file
     try:
-        #open config file  
-        configPath  =  os.path.join(SUIT_DIR, "config.json")
+        # open config file
+        configPath = os.path.join(SUIT_DIR, "config.json")
         with open(configPath, 'r') as f:  # Open the file and read the API key
             config = json.load(f)
         api_key = config["openAI_API_Key"]
@@ -408,7 +408,6 @@ class openAi_Image_create_O:
         except Exception as e:
             print(f'{PACKAGE_NAME}:openAi_Image_create_O:', e)
             imageURL = "https://i.imgur.com/removed.png"
-           
 
         image = requests.get(imageURL).content
         i = Image.open(io.BytesIO(image))
@@ -622,6 +621,7 @@ class LatentUpscaleFactor_O:
         )
         return (s,)
 
+
 class LatentUpscaleFactorSimple_O:
     """
     Upscale the latent code by multiplying the width and height by a factor
@@ -664,6 +664,7 @@ class LatentUpscaleFactorSimple_O:
                 new_x), enforce_mul_of_64(new_y), upscale_method, crop
         )
         return (s,)
+
 
 class SelectLatentImage_O:
     """
@@ -793,7 +794,7 @@ class saveTextToFile_O:
         self.saveTextToFile(textToSave, filename, append)
 
         return (textToSave, )
-    
+
     def saveTextToFile(self, text, filename, append):
         saveDir = os.path.join(SUIT_DIR, "output")
         saveFile = os.path.join(saveDir, filename)
@@ -801,7 +802,7 @@ class saveTextToFile_O:
         # Create directory if it does not exist
         if not os.path.exists(saveDir):
             os.makedirs(saveDir)
-        
+
         # Write to file
         mode = "a" if append else "w"
         try:
@@ -812,6 +813,8 @@ class saveTextToFile_O:
 
 
 fonts = None
+
+
 def loadFonts():
 
     global fonts
@@ -830,6 +833,8 @@ def loadFonts():
             print(f'{PACKAGE_NAME}:no fonts found in {fonts_filepath}')
             fonts = ["Arial.ttf"]
     return fonts
+
+
 class Text2Image_O:
     """
     This node will convert a string to an image
@@ -920,7 +925,9 @@ class Text2Image_O:
 
 # region text/NSP
 
+
 nspterminology = None  # Cache the NSP terminology
+
 
 def laodNSP():
     global nspterminology
@@ -946,6 +953,7 @@ def laodNSP():
 
     print(f'{PACKAGE_NAME}:NSP ready')
     return nspterminology
+
 
 class RandomNSP_O:
     @classmethod
@@ -977,6 +985,7 @@ class RandomNSP_O:
         result = random.choice(nspterminology[terminology])
         return (result, {"ui": {"STRING": result}})
 
+
 class ConcatRandomNSP_O:
     @classmethod
     def laodCategories(s):
@@ -999,18 +1008,20 @@ class ConcatRandomNSP_O:
     FUNCTION = "fun"
     CATEGORY = "O >>/text >>/NSP >>"
 
-    def fun(self,text, terminology,separator, seed):
+    def fun(self, text, terminology, separator, seed):
 
         nspterminology = laodNSP()
         # Set the seed
         random.seed(seed)
 
         result = random.choice(nspterminology[terminology])
-        
+
         return (text+separator+result+separator, {"ui": {"STRING": result}})
 # endregion text/NSP
 
-#region debug text 
+# region debug text
+
+
 class DebugText_O:
     """
     This node will write a text to the console
@@ -1031,6 +1042,7 @@ class DebugText_O:
     def debug_string(text, prefix):
         print(f'{PACKAGE_NAME}:{prefix}:{text}')
         return ()
+
 
 class DebugTextRoute_O:
     """
@@ -1053,7 +1065,7 @@ class DebugTextRoute_O:
         return (text,)
 
 
-#endregion
+# endregion
 
 # region text/operations
 
@@ -1121,6 +1133,7 @@ class replace_text_O:
 
 # region Image
 
+
 class ImageScaleFactorSimple_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
     crop_methods = ["disabled", "center"]
@@ -1160,6 +1173,8 @@ class ImageScaleFactorSimple_O:
             samples, width, height, upscale_method, crop)
         s = s.movedim(1, -1)
         return (s,)
+
+
 class ImageScaleFactor_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
     crop_methods = ["disabled", "center"]
@@ -1226,7 +1241,7 @@ class applyEquation1param_O:
     def INPUT_TYPES(cls):
         return {"required": {
             "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
-            "equation": ("STRING", {"multiline": True, "default": "x+1"}),
+            "equation": ("STRING", {"multiline": True, "default": "x*1"}),
         }
         }
 
@@ -1250,18 +1265,32 @@ class applyEquation2params_O:
             "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
             "y": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
             "equation": ("STRING", {"multiline": True, "default": "x+y"}),
-        }}
+        },
+            "optional": {
+            "equation_2": ("STRING", {"multiline": True, "default": "x+y"}),
+        }
+        }
 
-    RETURN_TYPES = ("FLOAT",)
+    RETURN_TYPES = ("FLOAT", "FLOAT",)
     FUNCTION = "fun"
     CATEGORY = "O >>/numbers >>"
 
-    def fun(self, x, y, equation):
-        equation = equation.replace("x", "("+str(x)+")")
-        equation = equation.replace("y", "("+str(y)+")")
-        answer = solveEquation(equation)
-        return (answer,)
+    def fun(self, x, y, equation, equation_2):
 
+        answer=0.0
+        answer_2=0.0
+
+        if (equation != ""):
+            equation = equation.replace("x", "("+str(x)+")")
+            equation = equation.replace("y", "("+str(y)+")")
+            answer = solveEquation(equation)
+
+        if (equation_2 != ""):
+            equation_2 = equation_2.replace("x", "("+str(x)+")")
+            equation_2 = equation_2.replace("y", "("+str(y)+")")
+            answer_2 = solveEquation(equation_2)
+            
+        return (answer, answer_2)
 
 class floatToInt_O:
     """
