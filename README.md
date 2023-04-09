@@ -1,4 +1,4 @@
-# kindly when you do pull requests , make it on dev branch if possible -- and thanks so much for every one that helped me 
+## Thank you to all the valuable contributors. Kindly submit any pull requests to the development branch instead of the main branch. Your efforts are greatly appreciated.
 
 # ComfyUI-extra-nodes - quality of life
 Extra nodes to be used in ComfyUI, including a new ChatGPT node for generating natural language responses.
