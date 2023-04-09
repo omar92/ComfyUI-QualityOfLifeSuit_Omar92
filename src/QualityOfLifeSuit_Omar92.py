@@ -622,6 +622,48 @@ class LatentUpscaleFactor_O:
         )
         return (s,)
 
+class LatentUpscaleFactorSimple_O:
+    """
+    Upscale the latent code by multiplying the width and height by a factor
+    """
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "samples": ("LATENT",),
+                "upscale_method": (cls.upscale_methods,),
+                "factor": ("FLOAT", {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.28125}),
+                "crop": (cls.crop_methods,),
+            }
+        }
+
+    RETURN_TYPES = ("LATENT",)
+    FUNCTION = "upscale"
+    CATEGORY = "O >>/latent >>"
+
+    def upscale(self, samples, upscale_method, factor, crop):
+        s = samples.copy()
+        x = samples["samples"].shape[3]
+        y = samples["samples"].shape[2]
+
+        new_x = int(x * factor)
+        new_y = int(y * factor)
+
+        if (new_x > MAX_RESOLUTION):
+            new_x = MAX_RESOLUTION
+        if (new_y > MAX_RESOLUTION):
+            new_y = MAX_RESOLUTION
+
+        print(f'{PACKAGE_NAME}:upscale from ({x*8},{y*8}) to ({new_x*8},{new_y*8})')
+
+        s["samples"] = comfy.utils.common_upscale(
+            samples["samples"], enforce_mul_of_64(
+                new_x), enforce_mul_of_64(new_y), upscale_method, crop
+        )
+        return (s,)
 
 class SelectLatentImage_O:
     """
@@ -1079,7 +1121,45 @@ class replace_text_O:
 
 # region Image
 
+class ImageScaleFactorSimple_O:
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+    toggle = ["enabled", "disabled"]
 
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"image": ("IMAGE",),
+                             "upscale_method": (s.upscale_methods,),
+                             "Factor": ("FLOAT", {"default": 1.25, "min": 0.0, "max": 10.0, "step": 0.28125}),
+                             "MulOf46": (s.toggle, {"default": "enabled"}),
+                             "crop": (s.crop_methods,)
+                             }}
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "upscale"
+
+    CATEGORY = "O >>/image >>"
+
+    def upscale(self, image, upscale_method, Factor, crop, MulOf46):
+        samples = image.movedim(-1, 1)
+        width = Factor * samples.shape[2]
+        height = Factor * samples.shape[3]
+        if (width > MAX_RESOLUTION):
+            width = MAX_RESOLUTION
+        if (height > MAX_RESOLUTION):
+            height = MAX_RESOLUTION
+
+        if (MulOf46 == "enabled"):
+            width = enforce_mul_of_64(width)
+            height = enforce_mul_of_64(height)
+
+        width = int(width)
+        height = int(height)
+        print(
+            f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
+        s = comfy.utils.common_upscale(
+            samples, width, height, upscale_method, crop)
+        s = s.movedim(1, -1)
+        return (s,)
 class ImageScaleFactor_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
     crop_methods = ["disabled", "center"]
@@ -1341,6 +1421,7 @@ NODE_CLASS_MAPPINGS = {
     "variation_image _O": openAi_Image_variation_O,
     # latentTools------------------------------------------
     "LatentUpscaleFactor _O": LatentUpscaleFactor_O,
+    "LatentUpscaleFactorSimple _O": LatentUpscaleFactorSimple_O,
     "selectLatentFromBatch _O": SelectLatentImage_O,
     # "VAEDecodeParallel _O": VAEDecodeParallel_O, # coming soon
     # StringTools------------------------------------------
@@ -1353,6 +1434,7 @@ NODE_CLASS_MAPPINGS = {
     "Text2Image _O": Text2Image_O,
     # ImageTools------------------------------------------
     "ImageScaleFactor _O": ImageScaleFactor_O,
+    "ImageScaleFactorSimple _O": ImageScaleFactorSimple_O,
     # NumberTools------------------------------------------
     "Equation1param _O": applyEquation1param_O,
     "Equation2params _O": applyEquation2params_O,
