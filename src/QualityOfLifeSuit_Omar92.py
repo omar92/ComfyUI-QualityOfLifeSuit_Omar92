@@ -1245,14 +1245,14 @@ class applyEquation1param_O:
         }
         }
 
-    RETURN_TYPES = ("FLOAT",)
+    RETURN_TYPES = ("FLOAT","int",)
     FUNCTION = "fun"
     CATEGORY = "O >>/numbers >>"
 
     def fun(self, x, equation):
         equation = equation.replace("x", "("+str(x)+")")
         answer = solveEquation(equation)
-        return (answer,)
+        return (answer,int(answer), )
 
 
 class applyEquation2params_O:
@@ -1271,7 +1271,7 @@ class applyEquation2params_O:
         }
         }
 
-    RETURN_TYPES = ("FLOAT", "FLOAT",)
+    RETURN_TYPES = ("FLOAT","INT", "FLOAT","INT")
     FUNCTION = "fun"
     CATEGORY = "O >>/numbers >>"
 
@@ -1289,8 +1289,8 @@ class applyEquation2params_O:
             equation_2 = equation_2.replace("x", "("+str(x)+")")
             equation_2 = equation_2.replace("y", "("+str(y)+")")
             answer_2 = solveEquation(equation_2)
-            
-        return (answer, answer_2)
+
+        return (answer,int(answer), answer_2,int(answer_2),)
 
 class floatToInt_O:
     """
