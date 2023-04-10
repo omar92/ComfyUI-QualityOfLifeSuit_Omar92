@@ -1202,7 +1202,27 @@ class replace_text_O:
 # endregion TextTools
 
 # region Image
+def upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
+    samples = image.movedim(-1, 1)
+    height = HeightFactor * samples.shape[2]
+    width = WidthFactor * samples.shape[3]
+    if (width > MAX_RESOLUTION):
+        width = MAX_RESOLUTION
+    if (height > MAX_RESOLUTION):
+        height = MAX_RESOLUTION
 
+    if (MulOf46 == "enabled"):
+        width = enforce_mul_of_64(width)
+        height = enforce_mul_of_64(height)
+
+    width = int(width)
+    height = int(height)
+    print(
+        f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
+    s = comfy.utils.common_upscale(
+        samples, width, height, upscale_method, crop)
+    s = s.movedim(1, -1)
+    return (s,)
 
 class ImageScaleFactorSimple_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
@@ -1223,26 +1243,7 @@ class ImageScaleFactorSimple_O:
     CATEGORY = "O >>/image >>"
 
     def upscale(self, image, upscale_method, Factor, crop, MulOf46):
-        samples = image.movedim(-1, 1)
-        height = Factor * samples.shape[2]
-        width = Factor * samples.shape[3]
-        if (width > MAX_RESOLUTION):
-            width = MAX_RESOLUTION
-        if (height > MAX_RESOLUTION):
-            height = MAX_RESOLUTION
-
-        if (MulOf46 == "enabled"):
-            width = enforce_mul_of_64(width)
-            height = enforce_mul_of_64(height)
-
-        width = int(width)
-        height = int(height)
-        print(
-            f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
-        s = comfy.utils.common_upscale(
-            samples, width, height, upscale_method, crop)
-        s = s.movedim(1, -1)
-        return (s,)
+        return upscaleImage(image, upscale_method, Factor, Factor, crop, MulOf46)
 
 
 class ImageScaleFactor_O:
@@ -1265,26 +1266,8 @@ class ImageScaleFactor_O:
     CATEGORY = "O >>/image >>"
 
     def upscale(self, image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
-        samples = image.movedim(-1, 1)
-        height = HeightFactor * samples.shape[2]
-        width = WidthFactor * samples.shape[3]
-        if (width > MAX_RESOLUTION):
-            width = MAX_RESOLUTION
-        if (height > MAX_RESOLUTION):
-            height = MAX_RESOLUTION
+        return upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46)
 
-        if (MulOf46 == "enabled"):
-            width = enforce_mul_of_64(width)
-            height = enforce_mul_of_64(height)
-
-        width = int(width)
-        height = int(height)
-        print(
-            f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
-        s = comfy.utils.common_upscale(
-            samples, width, height, upscale_method, crop)
-        s = s.movedim(1, -1)
-        return (s,)
 # endregion
 
 # region numbers
