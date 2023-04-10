@@ -175,16 +175,80 @@ class O_ChatGPT_O:
         openai.api_key = api_key  # Set the API key for the OpenAI module
 
         # Create a chat completion using the OpenAI module
-        completion = openai.ChatCompletion.create(
-            model=model,
-            messages=[
-                {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        try:
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+        except:# sometimes it fails first time to connect to server
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
+                    {"role": "user", "content": prompt}
+                ]
+            ) 
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
+
+class O_ChatGPT_medium_O:
+    """
+    this node is based on the openAI GPT-3 API to generate propmpts using the AI
+    """
+    # Define the input types for the node
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                # Multiline string input for the prompt
+                "prompt": ("STRING", {"multiline": True}),
+                "initMsg": ("STRING", {"multiline": True , "default":"act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"}),
+                "model": (get_gpt_models(), {"default": "gpt-3.5-turbo"}),
+            },
+            "optional": {
+                "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)  # Define the return type of the node
+    FUNCTION = "fun"  # Define the function name for the node
+    CATEGORY = "O >>/OpenAI >>"  # Define the category for the node
+
+    def fun(self,  model, prompt,initMsg, seed):
+        install_openai()  # Install the OpenAI module if not already installed
+        import openai  # Import the OpenAI module
+
+        # Get the API key from the file
+        api_key = get_api_key()
+
+        openai.api_key = api_key  # Set the API key for the OpenAI module
+
+        # Create a chat completion using the OpenAI module
+        try:
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": initMsg},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+        except:# sometimes it fails first time to connect to server
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": initMsg},
+                    {"role": "user", "content": prompt}
+                ]
+            ) 
+        # Get the answer from the chat completion
+        answer = completion["choices"][0]["message"]["content"]
+        return (answer,)  # Return the answer as a string
+
+
 # region advanced
 
 
@@ -304,10 +368,16 @@ class openAi_chat_completion_O:
     def fun(self, openai, model, messages, seed):
         # Create a chat completion using the OpenAI module
         openai = openai["openai"]
-        completion = openai.ChatCompletion.create(
+        try:
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=messages["messages"]
+            )
+        except:# sometimes it fails first time to connect to server
+            completion = openai.ChatCompletion.create(
             model=model,
             messages=messages["messages"]
-        )
+            )        
         # Get the answer from the chat completion
         content = completion["choices"][0]["message"]["content"]
         return (
@@ -1132,7 +1202,27 @@ class replace_text_O:
 # endregion TextTools
 
 # region Image
+def upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
+    samples = image.movedim(-1, 1)
+    height = HeightFactor * samples.shape[2]
+    width = WidthFactor * samples.shape[3]
+    if (width > MAX_RESOLUTION):
+        width = MAX_RESOLUTION
+    if (height > MAX_RESOLUTION):
+        height = MAX_RESOLUTION
 
+    if (MulOf46 == "enabled"):
+        width = enforce_mul_of_64(width)
+        height = enforce_mul_of_64(height)
+
+    width = int(width)
+    height = int(height)
+    print(
+        f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
+    s = comfy.utils.common_upscale(
+        samples, width, height, upscale_method, crop)
+    s = s.movedim(1, -1)
+    return (s,)
 
 class ImageScaleFactorSimple_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
@@ -1153,26 +1243,7 @@ class ImageScaleFactorSimple_O:
     CATEGORY = "O >>/image >>"
 
     def upscale(self, image, upscale_method, Factor, crop, MulOf46):
-        samples = image.movedim(-1, 1)
-        height = Factor * samples.shape[2]
-        width = Factor * samples.shape[3]
-        if (width > MAX_RESOLUTION):
-            width = MAX_RESOLUTION
-        if (height > MAX_RESOLUTION):
-            height = MAX_RESOLUTION
-
-        if (MulOf46 == "enabled"):
-            width = enforce_mul_of_64(width)
-            height = enforce_mul_of_64(height)
-
-        width = int(width)
-        height = int(height)
-        print(
-            f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
-        s = comfy.utils.common_upscale(
-            samples, width, height, upscale_method, crop)
-        s = s.movedim(1, -1)
-        return (s,)
+        return upscaleImage(image, upscale_method, Factor, Factor, crop, MulOf46)
 
 
 class ImageScaleFactor_O:
@@ -1195,26 +1266,8 @@ class ImageScaleFactor_O:
     CATEGORY = "O >>/image >>"
 
     def upscale(self, image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
-        samples = image.movedim(-1, 1)
-        height = HeightFactor * samples.shape[2]
-        width = WidthFactor * samples.shape[3]
-        if (width > MAX_RESOLUTION):
-            width = MAX_RESOLUTION
-        if (height > MAX_RESOLUTION):
-            height = MAX_RESOLUTION
+        return upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46)
 
-        if (MulOf46 == "enabled"):
-            width = enforce_mul_of_64(width)
-            height = enforce_mul_of_64(height)
-
-        width = int(width)
-        height = int(height)
-        print(
-            f'{PACKAGE_NAME}:upscale from ({samples.shape[2]},{samples.shape[3]}) to ({width},{height})')
-        s = comfy.utils.common_upscale(
-            samples, width, height, upscale_method, crop)
-        s = s.movedim(1, -1)
-        return (s,)
 # endregion
 
 # region numbers
@@ -1438,6 +1491,7 @@ class Note_O:
 NODE_CLASS_MAPPINGS = {
     # openAITools------------------------------------------
     "ChatGPT Simple _O": O_ChatGPT_O,
+    "ChatGPT medium _O": O_ChatGPT_medium_O,
     # openAiTools > Advanced
     "load_openAI _O": load_openAI_O,
     # openAiTools > Advanced > ChatGPT
