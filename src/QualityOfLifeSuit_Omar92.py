@@ -1491,7 +1491,7 @@ class Note_O:
 NODE_CLASS_MAPPINGS = {
     # openAITools------------------------------------------
     "ChatGPT Simple _O": O_ChatGPT_O,
-    "ChatGPT medium _O": O_ChatGPT_medium_O,
+    "ChatGPT compact _O": O_ChatGPT_medium_O,
     # openAiTools > Advanced
     "load_openAI _O": load_openAI_O,
     # openAiTools > Advanced > ChatGPT
