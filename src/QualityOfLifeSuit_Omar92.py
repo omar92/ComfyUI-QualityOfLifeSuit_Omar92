@@ -163,7 +163,7 @@ class O_ChatGPT_O:
 
     RETURN_TYPES = ("STRING",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI"  # Define the category for the node
 
     def fun(self,  model, prompt, seed):
         install_openai()  # Install the OpenAI module if not already installed
@@ -216,7 +216,7 @@ class O_ChatGPT_medium_O:
 
     RETURN_TYPES = ("STRING",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI"  # Define the category for the node
 
     def fun(self,  model, prompt,initMsg, seed):
         install_openai()  # Install the OpenAI module if not already installed
@@ -265,7 +265,7 @@ class load_openAI_O:
         }
     RETURN_TYPES = ("OPENAI",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI/Advanced"  # Define the category for the node
 
     def fun(self):
         install_openai()  # Install the OpenAI module if not already installed
@@ -300,7 +300,7 @@ class openAi_chat_message_O:
     RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
     FUNCTION = "fun"  # Define the function name for the node
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
     def fun(self, role, content):
         return (
@@ -327,7 +327,7 @@ class openAi_chat_messages_Combine_O:
     RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
     FUNCTION = "fun"  # Define the function name for the node
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
     def fun(self, message1, message2):
         messages = message1["messages"] + \
@@ -363,7 +363,7 @@ class openAi_chat_completion_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
     def fun(self, openai, model, messages, seed):
         # Create a chat completion using the OpenAI module
@@ -403,7 +403,7 @@ class DebugOpenAIChatMEssages_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/debug >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/debug/OpenAI/Advanced/ChatGPT"
 
     def fun(self, messages):
         print(f'{PACKAGE_NAME}:OpenAIChatMEssages', messages["messages"])
@@ -427,7 +427,7 @@ class DebugOpenAIChatCompletion_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/debug >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/debug/OpenAI/Advanced/ChatGPT"
 
     def fun(self, completion):
         print(f'{PACKAGE_NAME}:OpenAIChatCompletion:', completion)
@@ -459,7 +459,7 @@ class openAi_Image_create_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/Image >>"
+    CATEGORY = "O/OpenAI/Advanced/Image"
 
     def fun(self, openai, prompt, number, size, seed):
         # Create a chat completion using the OpenAI module
@@ -517,7 +517,7 @@ class openAi_Image_Edit_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/Image >>"
+    CATEGORY = "O/OpenAI/Advanced/Image"
 
     def fun(self, openai, image, prompt, number, size, seed):
         # Create a chat completion using the OpenAI module
@@ -599,7 +599,7 @@ class openAi_Image_variation_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/Image >>"
+    CATEGORY = "O/OpenAI/Advanced/Image"
 
     def fun(self, openai, image, number, size, seed):
         # Create a chat completion using the OpenAI module
@@ -668,7 +668,7 @@ class LatentUpscaleFactor_O:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "upscale"
-    CATEGORY = "O >>/latent >>"
+    CATEGORY = "O/latent"
 
     def upscale(self, samples, upscale_method, WidthFactor, HeightFactor, crop):
         s = samples.copy()
@@ -712,7 +712,7 @@ class LatentUpscaleFactorSimple_O:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "upscale"
-    CATEGORY = "O >>/latent >>"
+    CATEGORY = "O/latent"
 
     def upscale(self, samples, upscale_method, factor, crop):
         s = samples.copy()
@@ -751,7 +751,7 @@ class SelectLatentImage_O:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/latent >>"
+    CATEGORY = "O/latent"
 
     def fun(self, samples, index):
         # Get the batch size and number of channels
@@ -827,7 +827,7 @@ class seed2String_O:
 
     RETURN_TYPES = ("STRING")
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, seed):
         return (str(seed))
@@ -852,7 +852,7 @@ class saveTextToFile_O:
     OUTPUT_NODE = True
     RETURN_TYPES = ()
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>"
+    CATEGORY = "O/text"
 
     def fun(self, text, filename, append):
         # append dateTime
@@ -939,7 +939,7 @@ class Text2Image_O:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "create_image_new"
     OUTPUT_NODE = False
-    CATEGORY = "O >>/text >>"
+    CATEGORY = "O/text"
 
     def create_image_new(self, text, font, size, font_R, font_G, font_B, font_A, background_R, background_G, background_B, background_A, width, height, expand, x, y):
         font_color = (font_R, font_G, font_B, font_A)
@@ -1044,7 +1044,7 @@ class RandomNSP_O:
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
 
-    CATEGORY = "O >>/text >>/NSP >>"
+    CATEGORY = "O/text/NSP"
 
     def fun(self, terminology, seed):
 
@@ -1076,7 +1076,7 @@ class ConcatRandomNSP_O:
         }}
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/NSP >>"
+    CATEGORY = "O/text/NSP"
 
     def fun(self, text, terminology, separator, seed):
 
@@ -1106,7 +1106,7 @@ class DebugText_O:
     RETURN_TYPES = ()
     FUNCTION = "debug_string"
     OUTPUT_NODE = True
-    CATEGORY = "O >>/debug >>/text >>"
+    CATEGORY = "O/debug/text"
 
     @staticmethod
     def debug_string(text, prefix):
@@ -1127,7 +1127,7 @@ class DebugTextRoute_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "debug_string"
-    CATEGORY = "O >>/debug >>/text >>"
+    CATEGORY = "O/debug/text"
 
     @staticmethod
     def debug_string(text, prefix):
@@ -1154,7 +1154,7 @@ class concat_text_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/operations >>"
+    CATEGORY = "O/text/operations"
 
     @ staticmethod
     def fun(text1, separator, text2):
@@ -1173,7 +1173,7 @@ class trim_text_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/operations >>"
+    CATEGORY = "O/text/operations"
 
     def fun(self, text):
         return (text.strip(),)
@@ -1193,7 +1193,7 @@ class replace_text_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/operations >>"
+    CATEGORY = "O/text/operations"
 
     @ staticmethod
     def fun(text, old, new):
@@ -1240,7 +1240,7 @@ class ImageScaleFactorSimple_O:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "upscale"
 
-    CATEGORY = "O >>/image >>"
+    CATEGORY = "O/image"
 
     def upscale(self, image, upscale_method, Factor, crop, MulOf46):
         return upscaleImage(image, upscale_method, Factor, Factor, crop, MulOf46)
@@ -1263,7 +1263,7 @@ class ImageScaleFactor_O:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "upscale"
 
-    CATEGORY = "O >>/image >>"
+    CATEGORY = "O/image"
 
     def upscale(self, image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
         return upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46)
@@ -1300,7 +1300,7 @@ class applyEquation1param_O:
 
     RETURN_TYPES = ("FLOAT","int",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, x, equation):
         equation = equation.replace("x", "("+str(x)+")")
@@ -1326,7 +1326,7 @@ class applyEquation2params_O:
 
     RETURN_TYPES = ("FLOAT","INT", "FLOAT","INT")
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, x, y, equation, equation_2):
 
@@ -1358,7 +1358,7 @@ class floatToInt_O:
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, float):
         return (int(float),)
@@ -1377,7 +1377,7 @@ class intToFloat_O:
 
     RETURN_TYPES = ("FLOAT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, int):
         return (float(int),)
@@ -1396,7 +1396,7 @@ class floatToText_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, float):
         return (str(float),)
@@ -1419,7 +1419,7 @@ class Text_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, text):
         return (text+" ",)
@@ -1435,7 +1435,7 @@ class seed_O:
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, seed):
         return (seed,)
@@ -1451,7 +1451,7 @@ class int_O:
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, int):
         return (int,)
@@ -1467,7 +1467,7 @@ class float_O:
 
     RETURN_TYPES = ("FLOAT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, float):
         return (float,)
@@ -1480,7 +1480,7 @@ class Note_O:
     RETURN_TYPES = ()
     FUNCTION = "fun"
     OUTPUT_NODE = True
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, text):
         return ()
