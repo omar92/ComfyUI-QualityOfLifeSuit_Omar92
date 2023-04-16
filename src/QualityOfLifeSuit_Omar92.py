@@ -183,17 +183,18 @@ class O_ChatGPT_O:
                     {"role": "user", "content": prompt}
                 ]
             )
-        except:# sometimes it fails first time to connect to server
+        except:  # sometimes it fails first time to connect to server
             completion = openai.ChatCompletion.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
                     {"role": "user", "content": prompt}
                 ]
-            ) 
+            )
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
+
 
 class O_ChatGPT_medium_O:
     """
@@ -206,7 +207,7 @@ class O_ChatGPT_medium_O:
             "required": {
                 # Multiline string input for the prompt
                 "prompt": ("STRING", {"multiline": True}),
-                "initMsg": ("STRING", {"multiline": True , "default":"act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"}),
+                "initMsg": ("STRING", {"multiline": True, "default": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"}),
                 "model": (get_gpt_models(), {"default": "gpt-3.5-turbo"}),
             },
             "optional": {
@@ -218,7 +219,7 @@ class O_ChatGPT_medium_O:
     FUNCTION = "fun"  # Define the function name for the node
     CATEGORY = "O/OpenAI"  # Define the category for the node
 
-    def fun(self,  model, prompt,initMsg, seed):
+    def fun(self,  model, prompt, initMsg, seed):
         install_openai()  # Install the OpenAI module if not already installed
         import openai  # Import the OpenAI module
 
@@ -236,14 +237,14 @@ class O_ChatGPT_medium_O:
                     {"role": "user", "content": prompt}
                 ]
             )
-        except:# sometimes it fails first time to connect to server
+        except:  # sometimes it fails first time to connect to server
             completion = openai.ChatCompletion.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": initMsg},
                     {"role": "user", "content": prompt}
                 ]
-            ) 
+            )
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
@@ -373,11 +374,11 @@ class openAi_chat_completion_O:
                 model=model,
                 messages=messages["messages"]
             )
-        except:# sometimes it fails first time to connect to server
+        except:  # sometimes it fails first time to connect to server
             completion = openai.ChatCompletion.create(
-            model=model,
-            messages=messages["messages"]
-            )        
+                model=model,
+                messages=messages["messages"]
+            )
         # Get the answer from the chat completion
         content = completion["choices"][0]["message"]["content"]
         return (
@@ -841,7 +842,7 @@ class saveTextToFile_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "text": ("STRING", {"default": '', "multiline": False}),
+                "text": ("STRING", {"default": '', "multiline": False, "defaultBehavior": "input"}),
                 "filename": ("STRING", {"default": "log.txt", "multiline": False}),
             },
             "optional": {
@@ -1069,7 +1070,7 @@ class ConcatRandomNSP_O:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
             "terminology": (s.laodCategories(),),
             "separator": ("STRING", {"multiline": False, "default": ","}),
             "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
@@ -1099,7 +1100,7 @@ class DebugText_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
             "prefix": ("STRING", {"default": "debug", "multiline": False}),
         }}
 
@@ -1121,7 +1122,7 @@ class DebugTextRoute_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
             "prefix": ("STRING", {"default": "debug", "multiline": False}),
         }}
 
@@ -1147,8 +1148,8 @@ class concat_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text1": ("STRING", {"multiline": True}),
-            "text2": ("STRING", {"multiline": True}),
+            "text1": ("STRING", {"multiline": True, "defaultBehavior": "input"}),
+            "text2": ("STRING", {"multiline": True, "defaultBehavior": "input"}),
             "separator": ("STRING", {"multiline": False, "default": ","}),
         }}
 
@@ -1168,7 +1169,7 @@ class trim_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
         }}
 
     RETURN_TYPES = ("STRING",)
@@ -1186,7 +1187,7 @@ class replace_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": True}),
+            "text": ("STRING", {"multiline": True, "defaultBehavior": "input"}),
             "old": ("STRING", {"multiline": False}),
             "new": ("STRING", {"multiline": False})
         }}
@@ -1202,6 +1203,8 @@ class replace_text_O:
 # endregion TextTools
 
 # region Image
+
+
 def upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
     samples = image.movedim(-1, 1)
     height = HeightFactor * samples.shape[2]
@@ -1223,6 +1226,7 @@ def upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46
         samples, width, height, upscale_method, crop)
     s = s.movedim(1, -1)
     return (s,)
+
 
 class ImageScaleFactorSimple_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
@@ -1293,19 +1297,19 @@ class applyEquation1param_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
             "equation": ("STRING", {"multiline": True, "default": "x*1"}),
         }
         }
 
-    RETURN_TYPES = ("FLOAT","int",)
+    RETURN_TYPES = ("FLOAT", "int",)
     FUNCTION = "fun"
     CATEGORY = "O/numbers"
 
     def fun(self, x, equation):
         equation = equation.replace("x", "("+str(x)+")")
         answer = solveEquation(equation)
-        return (answer,int(answer), )
+        return (answer, int(answer), )
 
 
 class applyEquation2params_O:
@@ -1315,8 +1319,8 @@ class applyEquation2params_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
-            "y": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
+            "y": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
             "equation": ("STRING", {"multiline": True, "default": "x+y"}),
         },
             "optional": {
@@ -1324,14 +1328,14 @@ class applyEquation2params_O:
         }
         }
 
-    RETURN_TYPES = ("FLOAT","INT", "FLOAT","INT")
+    RETURN_TYPES = ("FLOAT", "INT", "FLOAT", "INT")
     FUNCTION = "fun"
     CATEGORY = "O/numbers"
 
     def fun(self, x, y, equation, equation_2):
 
-        answer=0.0
-        answer_2=0.0
+        answer = 0.0
+        answer_2 = 0.0
 
         if (equation != ""):
             equation = equation.replace("x", "("+str(x)+")")
@@ -1343,7 +1347,8 @@ class applyEquation2params_O:
             equation_2 = equation_2.replace("y", "("+str(y)+")")
             answer_2 = solveEquation(equation_2)
 
-        return (answer,int(answer), answer_2,int(answer_2),)
+        return (answer, int(answer), answer_2, int(answer_2),)
+
 
 class floatToInt_O:
     """
@@ -1352,7 +1357,7 @@ class floatToInt_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
         }
         }
 
@@ -1371,7 +1376,7 @@ class intToFloat_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "int": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+            "int": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
         }
         }
 
@@ -1390,7 +1395,7 @@ class floatToText_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
         }
         }
 
