@@ -1405,6 +1405,54 @@ class floatToText_O:
 
     def fun(self, float):
         return (str(float),)
+
+
+class GetImageWidthAndHeight_O:
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+    toggle = ["enabled", "disabled"]
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"image": ("IMAGE",),
+                             }
+                }
+    RETURN_TYPES = ("INT", "INT")
+    FUNCTION = "fun"
+
+    CATEGORY = "O/numbers"
+
+    def fun(self, image):
+        samples = image.movedim(-1, 1)
+        height = samples.shape[2]
+        width = samples.shape[3]
+        return (int(width), int(height),)
+
+
+class GetLatentWidthAndHeight_O:
+    """
+    Upscale the latent code by multiplying the width and height by a factor
+    """
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "samples": ("LATENT",),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "INT",)
+    FUNCTION = "fun"
+    CATEGORY = "O/numbers"
+
+    def fun(self, samples):
+        w = samples["samples"].shape[3]
+        h = samples["samples"].shape[2]
+        return (int(w), int(h),)
+
 # endregion
 
 # region Utils
@@ -1529,6 +1577,8 @@ NODE_CLASS_MAPPINGS = {
     "floatToInt _O": floatToInt_O,
     "intToFloat _O": intToFloat_O,
     "floatToText _O": floatToText_O,
+    "GetImage_(Width&Height) _O": GetImageWidthAndHeight_O,
+    "GetLatent_(Width&Height) _O": GetLatentWidthAndHeight_O,
     # debug------------------------------------------
     "debug messages_O": DebugOpenAIChatMEssages_O,
     "debug Completeion _O": DebugOpenAIChatCompletion_O,
