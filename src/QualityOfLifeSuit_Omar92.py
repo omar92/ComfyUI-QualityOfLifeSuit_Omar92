@@ -163,7 +163,7 @@ class O_ChatGPT_O:
 
     RETURN_TYPES = ("STRING",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI"  # Define the category for the node
 
     def fun(self,  model, prompt, seed):
         install_openai()  # Install the OpenAI module if not already installed
@@ -183,17 +183,18 @@ class O_ChatGPT_O:
                     {"role": "user", "content": prompt}
                 ]
             )
-        except:# sometimes it fails first time to connect to server
+        except:  # sometimes it fails first time to connect to server
             completion = openai.ChatCompletion.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"},
                     {"role": "user", "content": prompt}
                 ]
-            ) 
+            )
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
+
 
 class O_ChatGPT_medium_O:
     """
@@ -206,7 +207,7 @@ class O_ChatGPT_medium_O:
             "required": {
                 # Multiline string input for the prompt
                 "prompt": ("STRING", {"multiline": True}),
-                "initMsg": ("STRING", {"multiline": True , "default":"act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"}),
+                "initMsg": ("STRING", {"multiline": True, "default": "act as prompt generator ,i will give you text and you describe an image that match that text in details, answer with one response only"}),
                 "model": (get_gpt_models(), {"default": "gpt-3.5-turbo"}),
             },
             "optional": {
@@ -216,9 +217,9 @@ class O_ChatGPT_medium_O:
 
     RETURN_TYPES = ("STRING",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI"  # Define the category for the node
 
-    def fun(self,  model, prompt,initMsg, seed):
+    def fun(self,  model, prompt, initMsg, seed):
         install_openai()  # Install the OpenAI module if not already installed
         import openai  # Import the OpenAI module
 
@@ -236,14 +237,14 @@ class O_ChatGPT_medium_O:
                     {"role": "user", "content": prompt}
                 ]
             )
-        except:# sometimes it fails first time to connect to server
+        except:  # sometimes it fails first time to connect to server
             completion = openai.ChatCompletion.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": initMsg},
                     {"role": "user", "content": prompt}
                 ]
-            ) 
+            )
         # Get the answer from the chat completion
         answer = completion["choices"][0]["message"]["content"]
         return (answer,)  # Return the answer as a string
@@ -265,7 +266,7 @@ class load_openAI_O:
         }
     RETURN_TYPES = ("OPENAI",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI/Advanced"  # Define the category for the node
 
     def fun(self):
         install_openai()  # Install the OpenAI module if not already installed
@@ -300,7 +301,7 @@ class openAi_chat_message_O:
     RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
     FUNCTION = "fun"  # Define the function name for the node
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
     def fun(self, role, content):
         return (
@@ -327,7 +328,7 @@ class openAi_chat_messages_Combine_O:
     RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
     FUNCTION = "fun"  # Define the function name for the node
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
     def fun(self, message1, message2):
         messages = message1["messages"] + \
@@ -363,7 +364,7 @@ class openAi_chat_completion_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
     def fun(self, openai, model, messages, seed):
         # Create a chat completion using the OpenAI module
@@ -373,11 +374,11 @@ class openAi_chat_completion_O:
                 model=model,
                 messages=messages["messages"]
             )
-        except:# sometimes it fails first time to connect to server
+        except:  # sometimes it fails first time to connect to server
             completion = openai.ChatCompletion.create(
-            model=model,
-            messages=messages["messages"]
-            )        
+                model=model,
+                messages=messages["messages"]
+            )
         # Get the answer from the chat completion
         content = completion["choices"][0]["message"]["content"]
         return (
@@ -403,7 +404,7 @@ class DebugOpenAIChatMEssages_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/debug >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/debug/OpenAI/Advanced/ChatGPT"
 
     def fun(self, messages):
         print(f'{PACKAGE_NAME}:OpenAIChatMEssages', messages["messages"])
@@ -427,7 +428,7 @@ class DebugOpenAIChatCompletion_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/debug >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/debug/OpenAI/Advanced/ChatGPT"
 
     def fun(self, completion):
         print(f'{PACKAGE_NAME}:OpenAIChatCompletion:', completion)
@@ -459,7 +460,7 @@ class openAi_Image_create_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/Image >>"
+    CATEGORY = "O/OpenAI/Advanced/Image"
 
     def fun(self, openai, prompt, number, size, seed):
         # Create a chat completion using the OpenAI module
@@ -517,7 +518,7 @@ class openAi_Image_Edit_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/Image >>"
+    CATEGORY = "O/OpenAI/Advanced/Image"
 
     def fun(self, openai, image, prompt, number, size, seed):
         # Create a chat completion using the OpenAI module
@@ -599,7 +600,7 @@ class openAi_Image_variation_O:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>/Image >>"
+    CATEGORY = "O/OpenAI/Advanced/Image"
 
     def fun(self, openai, image, number, size, seed):
         # Create a chat completion using the OpenAI module
@@ -668,7 +669,7 @@ class LatentUpscaleFactor_O:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "upscale"
-    CATEGORY = "O >>/latent >>"
+    CATEGORY = "O/latent"
 
     def upscale(self, samples, upscale_method, WidthFactor, HeightFactor, crop):
         s = samples.copy()
@@ -712,7 +713,7 @@ class LatentUpscaleFactorSimple_O:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "upscale"
-    CATEGORY = "O >>/latent >>"
+    CATEGORY = "O/latent"
 
     def upscale(self, samples, upscale_method, factor, crop):
         s = samples.copy()
@@ -751,7 +752,7 @@ class SelectLatentImage_O:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/latent >>"
+    CATEGORY = "O/latent"
 
     def fun(self, samples, index):
         # Get the batch size and number of channels
@@ -827,7 +828,7 @@ class seed2String_O:
 
     RETURN_TYPES = ("STRING")
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, seed):
         return (str(seed))
@@ -841,7 +842,7 @@ class saveTextToFile_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "text": ("STRING", {"default": '', "multiline": False}),
+                "text": ("STRING", {"default": '', "multiline": False, "defaultBehavior": "input"}),
                 "filename": ("STRING", {"default": "log.txt", "multiline": False}),
             },
             "optional": {
@@ -852,7 +853,7 @@ class saveTextToFile_O:
     OUTPUT_NODE = True
     RETURN_TYPES = ()
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>"
+    CATEGORY = "O/text"
 
     def fun(self, text, filename, append):
         # append dateTime
@@ -939,7 +940,7 @@ class Text2Image_O:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "create_image_new"
     OUTPUT_NODE = False
-    CATEGORY = "O >>/text >>"
+    CATEGORY = "O/text"
 
     def create_image_new(self, text, font, size, font_R, font_G, font_B, font_A, background_R, background_G, background_B, background_A, width, height, expand, x, y):
         font_color = (font_R, font_G, font_B, font_A)
@@ -1044,7 +1045,7 @@ class RandomNSP_O:
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
 
-    CATEGORY = "O >>/text >>/NSP >>"
+    CATEGORY = "O/text/NSP"
 
     def fun(self, terminology, seed):
 
@@ -1069,14 +1070,14 @@ class ConcatRandomNSP_O:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
             "terminology": (s.laodCategories(),),
             "separator": ("STRING", {"multiline": False, "default": ","}),
             "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
         }}
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/NSP >>"
+    CATEGORY = "O/text/NSP"
 
     def fun(self, text, terminology, separator, seed):
 
@@ -1099,14 +1100,14 @@ class DebugText_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
             "prefix": ("STRING", {"default": "debug", "multiline": False}),
         }}
 
     RETURN_TYPES = ()
     FUNCTION = "debug_string"
     OUTPUT_NODE = True
-    CATEGORY = "O >>/debug >>/text >>"
+    CATEGORY = "O/debug/text"
 
     @staticmethod
     def debug_string(text, prefix):
@@ -1121,13 +1122,13 @@ class DebugTextRoute_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
             "prefix": ("STRING", {"default": "debug", "multiline": False}),
         }}
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "debug_string"
-    CATEGORY = "O >>/debug >>/text >>"
+    CATEGORY = "O/debug/text"
 
     @staticmethod
     def debug_string(text, prefix):
@@ -1147,14 +1148,14 @@ class concat_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text1": ("STRING", {"multiline": True}),
-            "text2": ("STRING", {"multiline": True}),
+            "text1": ("STRING", {"multiline": True, "defaultBehavior": "input"}),
+            "text2": ("STRING", {"multiline": True, "defaultBehavior": "input"}),
             "separator": ("STRING", {"multiline": False, "default": ","}),
         }}
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/operations >>"
+    CATEGORY = "O/text/operations"
 
     @ staticmethod
     def fun(text1, separator, text2):
@@ -1168,12 +1169,12 @@ class trim_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": False}),
+            "text": ("STRING", {"multiline": False, "defaultBehavior": "input"}),
         }}
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/operations >>"
+    CATEGORY = "O/text/operations"
 
     def fun(self, text):
         return (text.strip(),)
@@ -1186,14 +1187,14 @@ class replace_text_O:
     @ classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "text": ("STRING", {"multiline": True}),
+            "text": ("STRING", {"multiline": True, "defaultBehavior": "input"}),
             "old": ("STRING", {"multiline": False}),
             "new": ("STRING", {"multiline": False})
         }}
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/text >>/operations >>"
+    CATEGORY = "O/text/operations"
 
     @ staticmethod
     def fun(text, old, new):
@@ -1202,6 +1203,8 @@ class replace_text_O:
 # endregion TextTools
 
 # region Image
+
+
 def upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
     samples = image.movedim(-1, 1)
     height = HeightFactor * samples.shape[2]
@@ -1224,6 +1227,7 @@ def upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46
     s = s.movedim(1, -1)
     return (s,)
 
+
 class ImageScaleFactorSimple_O:
     upscale_methods = ["nearest-exact", "bilinear", "area"]
     crop_methods = ["disabled", "center"]
@@ -1240,7 +1244,7 @@ class ImageScaleFactorSimple_O:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "upscale"
 
-    CATEGORY = "O >>/image >>"
+    CATEGORY = "O/image"
 
     def upscale(self, image, upscale_method, Factor, crop, MulOf46):
         return upscaleImage(image, upscale_method, Factor, Factor, crop, MulOf46)
@@ -1263,7 +1267,7 @@ class ImageScaleFactor_O:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "upscale"
 
-    CATEGORY = "O >>/image >>"
+    CATEGORY = "O/image"
 
     def upscale(self, image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46):
         return upscaleImage(image, upscale_method, WidthFactor, HeightFactor, crop, MulOf46)
@@ -1293,19 +1297,19 @@ class applyEquation1param_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
             "equation": ("STRING", {"multiline": True, "default": "x*1"}),
         }
         }
 
-    RETURN_TYPES = ("FLOAT","int",)
+    RETURN_TYPES = ("FLOAT", "int",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, x, equation):
         equation = equation.replace("x", "("+str(x)+")")
         answer = solveEquation(equation)
-        return (answer,int(answer), )
+        return (answer, int(answer), )
 
 
 class applyEquation2params_O:
@@ -1315,8 +1319,8 @@ class applyEquation2params_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
-            "y": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "x": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
+            "y": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
             "equation": ("STRING", {"multiline": True, "default": "x+y"}),
         },
             "optional": {
@@ -1324,14 +1328,14 @@ class applyEquation2params_O:
         }
         }
 
-    RETURN_TYPES = ("FLOAT","INT", "FLOAT","INT")
+    RETURN_TYPES = ("FLOAT", "INT", "FLOAT", "INT")
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, x, y, equation, equation_2):
 
-        answer=0.0
-        answer_2=0.0
+        answer = 0.0
+        answer_2 = 0.0
 
         if (equation != ""):
             equation = equation.replace("x", "("+str(x)+")")
@@ -1343,7 +1347,8 @@ class applyEquation2params_O:
             equation_2 = equation_2.replace("y", "("+str(y)+")")
             answer_2 = solveEquation(equation_2)
 
-        return (answer,int(answer), answer_2,int(answer_2),)
+        return (answer, int(answer), answer_2, int(answer_2),)
+
 
 class floatToInt_O:
     """
@@ -1352,13 +1357,13 @@ class floatToInt_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
         }
         }
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, float):
         return (int(float),)
@@ -1371,13 +1376,13 @@ class intToFloat_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "int": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+            "int": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
         }
         }
 
     RETURN_TYPES = ("FLOAT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, int):
         return (float(int),)
@@ -1390,16 +1395,64 @@ class floatToText_O:
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {
-            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff}),
+            "float": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 0xffffffffffffffff, "defaultBehavior": "input"}),
         }
         }
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/numbers >>"
+    CATEGORY = "O/numbers"
 
     def fun(self, float):
         return (str(float),)
+
+
+class GetImageWidthAndHeight_O:
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+    toggle = ["enabled", "disabled"]
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"image": ("IMAGE",),
+                             }
+                }
+    RETURN_TYPES = ("INT", "INT")
+    FUNCTION = "fun"
+
+    CATEGORY = "O/numbers"
+
+    def fun(self, image):
+        samples = image.movedim(-1, 1)
+        height = samples.shape[2]
+        width = samples.shape[3]
+        return (int(width), int(height),)
+
+
+class GetLatentWidthAndHeight_O:
+    """
+    Upscale the latent code by multiplying the width and height by a factor
+    """
+    upscale_methods = ["nearest-exact", "bilinear", "area"]
+    crop_methods = ["disabled", "center"]
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "samples": ("LATENT",),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "INT",)
+    FUNCTION = "fun"
+    CATEGORY = "O/numbers"
+
+    def fun(self, samples):
+        w = samples["samples"].shape[3]
+        h = samples["samples"].shape[2]
+        return (int(w), int(h),)
+
 # endregion
 
 # region Utils
@@ -1419,7 +1472,7 @@ class Text_O:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, text):
         return (text+" ",)
@@ -1435,7 +1488,7 @@ class seed_O:
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, seed):
         return (seed,)
@@ -1451,7 +1504,7 @@ class int_O:
 
     RETURN_TYPES = ("INT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, int):
         return (int,)
@@ -1467,7 +1520,7 @@ class float_O:
 
     RETURN_TYPES = ("FLOAT",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, float):
         return (float,)
@@ -1480,7 +1533,7 @@ class Note_O:
     RETURN_TYPES = ()
     FUNCTION = "fun"
     OUTPUT_NODE = True
-    CATEGORY = "O >>/utils >>"
+    CATEGORY = "O/utils"
 
     def fun(self, text):
         return ()
@@ -1524,6 +1577,8 @@ NODE_CLASS_MAPPINGS = {
     "floatToInt _O": floatToInt_O,
     "intToFloat _O": intToFloat_O,
     "floatToText _O": floatToText_O,
+    "GetImage_(Width&Height) _O": GetImageWidthAndHeight_O,
+    "GetLatent_(Width&Height) _O": GetLatentWidthAndHeight_O,
     # debug------------------------------------------
     "debug messages_O": DebugOpenAIChatMEssages_O,
     "debug Completeion _O": DebugOpenAIChatCompletion_O,

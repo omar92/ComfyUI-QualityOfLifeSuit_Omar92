@@ -44,7 +44,7 @@ class O_ChatGPT_deprecated:
 
     RETURN_TYPES = ("STR",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/deprecated >>/OpenAI >>"  # Define the category for the node
+    CATEGORY = "O/deprecated/OpenAI"  # Define the category for the node
 
     def fun(self, api_key_file, prompt):
         self.install_openai()  # Install the OpenAI module if not already installed
@@ -102,7 +102,7 @@ class O_ChatGPT_deprecated:
         }
     RETURN_TYPES = ("OPENAI",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
-    CATEGORY = "O >>/OpenAI >>/Advanced >>"  # Define the category for the node
+    CATEGORY = "O/OpenAI/Advanced"  # Define the category for the node
 
     def fun(self, api_key_file):
         self.install_openai()  # Install the OpenAI module if not already installed
@@ -152,7 +152,7 @@ class openAi_chat_message_STR_deprecated:
     RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
     FUNCTION = "fun"  # Define the function name for the node
     # Define the category for the node
-    CATEGORY = "O >>/deprecated >>/OpenAI >>/Advanced >>/ChatGPT"
+    CATEGORY = "O/deprecated/OpenAI/Advanced/ChatGPT"
 
     def fun(self, role, content):
         return (
@@ -180,7 +180,7 @@ class openAi_chat_messages_Combine_deprecated:
     RETURN_TYPES = ("OPENAI_CHAT_MESSAGES",)
     FUNCTION = "fun"  # Define the function name for the node
     # Define the category for the node
-    CATEGORY = "O >>/deprecated >>/OpenAI >>/Advanced >>/ChatGPT >>"
+    CATEGORY = "O/deprecated/OpenAI/Advanced/ChatGPT"
 
     def fun(self, message1, message2):
         messages = message1["messages"] + \
@@ -211,7 +211,7 @@ class openAi_Image_create_deprecated:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/deprecated >>/OpenAI >>/Advanced >>/Image"
+    CATEGORY = "O/deprecated/OpenAI/Advanced/Image"
 
     def fun(self, openai, prompt, number, size):
         # Create a chat completion using the OpenAI module
@@ -259,7 +259,7 @@ class openAi_chat_completion_deprecated:
     FUNCTION = "fun"  # Define the function name for the node
     OUTPUT_NODE = True
     # Define the category for the node
-    CATEGORY = "O >>/deprecated >>/OpenAI >>/Advanced >>/ChatGPT"
+    CATEGORY = "O/deprecated/OpenAI/Advanced/ChatGPT"
 
     def fun(self, openai, model, messages):
         # Create a chat completion using the OpenAI module
@@ -296,7 +296,7 @@ class O_String_deprecated:
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "ostr"
-    CATEGORY = "O >>/deprecated >>/string >>"
+    CATEGORY = "O/deprecated/string"
 
     @staticmethod
     def ostr(string):
@@ -314,7 +314,7 @@ class DebugString_deprecated:
     RETURN_TYPES = ()
     FUNCTION = "debug_string"
     OUTPUT_NODE = True
-    CATEGORY = "O >>/deprecated >>/string >>"
+    CATEGORY = "O/deprecated/string"
 
     @staticmethod
     def debug_string(string):
@@ -350,7 +350,7 @@ class string2Image_deprecated:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "create_image"
     OUTPUT_NODE = False
-    CATEGORY = "O >>/deprecated >>/string >>"
+    CATEGORY = "O/deprecated/string"
 
     def create_image(self, string, font, size, font_R, font_G, font_B, background_R, background_G, background_B):
         font_color = (font_R, font_G, font_B)
@@ -380,7 +380,7 @@ class CLIPStringEncode_deprecated:
     RETURN_TYPES = ("CONDITIONING",)
     FUNCTION = "encode"
 
-    CATEGORY = "O >>/deprecated >>/string >>"
+    CATEGORY = "O/deprecated/string"
 
     def encode(self, string, clip):
         return ([[clip.encode(string["string"]), {}]], )
@@ -400,7 +400,7 @@ class concat_String_deprecated:
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/deprecated >>/string >>/operations >>"
+    CATEGORY = "O/deprecated/string/operations"
 
     @staticmethod
     def fun(string1, string2):
@@ -419,7 +419,7 @@ class trim_String_deprecated:
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/deprecated >>/string >>/operations >>"
+    CATEGORY = "O/deprecated/string/operations"
 
     def fun(self, string):
         return (
@@ -443,7 +443,7 @@ class replace_String_deprecated:
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/deprecated >>/string >>/operations >>"
+    CATEGORY = "O/deprecated/string/operations"
 
     @staticmethod
     def fun(string, old, new):
@@ -466,7 +466,7 @@ class replace_String_advanced_deprecated:
 
     RETURN_TYPES = ("STR",)
     FUNCTION = "fun"
-    CATEGORY = "O >>/deprecated >>/string >>/operations >>"
+    CATEGORY = "O/deprecated/string/operations"
 
     @staticmethod
     def fun(string, old, new):
@@ -496,7 +496,7 @@ class LatentUpscaleMultiply_deprecated:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = "upscale"
-    CATEGORY = "O >>/deprecated >>/latent >>"
+    CATEGORY = "O/deprecated/latent"
 
     def upscale(self, samples, upscale_method, WidthMul, HeightMul, crop):
         s = samples.copy()
