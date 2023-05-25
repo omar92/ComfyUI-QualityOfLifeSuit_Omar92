@@ -58,7 +58,7 @@ SUIT_DIR = (os.path.dirname(os.path.dirname(NODE_FILE))
             if os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92'
             or os.path.dirname(os.path.dirname(NODE_FILE)) == 'QualityOfLifeSuit_Omar92-dev'
             else os.path.dirname(NODE_FILE))
-SUIT_DIR = SUIT_DIR+"\\.."
+SUIT_DIR = os.path.normpath(os.path.join(SUIT_DIR, '..'))
 print(f'\033[33mQualityOfLifeSuit_Omar92_DIR:\033[0m {SUIT_DIR}')
 
 
