@@ -149,19 +149,24 @@ def get_openAI_models():
         return openAI_models
 
     install_openai()
-    import openai
-    # Set the API key for the OpenAI module
-    openai.api_key = get_api_key()
+    from openai import OpenAI
+    # Get the API key from the file
+    api_key = get_api_key()
+    client = OpenAI(
+                # This is the default and can be omitted
+                api_key=api_key,
+            )
 
     try:
-        models = openai.Model.list()  # Get the list of models
+        models = client.models.list()  # Get the list of models
+        print("all models:",models)
     except:
         print("Error: OpenAI API key is invalid OpenAI features wont work for you")
         return []
 
     openAI_models = []  # Create a list for the chat models
-    for model in models["data"]:  # Loop through the models
-        openAI_models.append(model["id"])  # Add the model to the list
+    for model in getattr(models, "data"):  # Loop through the models
+        openAI_models.append(getattr(model, "id"))  # Add the model to the list
 
     return openAI_models  # Return the list of chat models
 
@@ -174,7 +179,7 @@ def get_gpt_models():
     if (openAI_gpt_models != None):
         return openAI_gpt_models
     models = get_openAI_models()
-    openAI_gpt_models = []  # Create a list for the chat models
+    openAI_gpt_models = ["gpt-3.5-turbo"]  # Create a list for the chat models
     for model in models:  # Loop through the models
         if ("gpt" in model.lower()):
             openAI_gpt_models.append(model)
@@ -207,12 +212,15 @@ class O_ChatGPT_O:
 
     def fun(self,  model, prompt,behaviour, seed):
         install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
-
+        #import openai  # Import the OpenAI module
+        from openai import OpenAI
         # Get the API key from the file
         api_key = get_api_key()
-
-        openai.api_key = api_key  # Set the API key for the OpenAI module
+        client = OpenAI(
+                    # This is the default and can be omitted
+                    api_key=api_key,
+                )
+        #openai.api_key = api_key  # Set the API key for the OpenAI module
         initMessage = "";
         if(behaviour == "description"):
             initMessage = get_init_message(False);
@@ -220,7 +228,7 @@ class O_ChatGPT_O:
             initMessage = get_init_message(True);
         # Create a chat completion using the OpenAI module
         try:
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=[
                     {"role": "user", "content":initMessage},
@@ -228,7 +236,7 @@ class O_ChatGPT_O:
                 ]
             )
         except:  # sometimes it fails first time to connect to server
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": initMessage},
@@ -236,7 +244,7 @@ class O_ChatGPT_O:
                 ]
             )
         # Get the answer from the chat completion
-        answer = completion["choices"][0]["message"]["content"]
+        answer = completion.choices[0].message.content
         return (answer,)  # Return the answer as a string
 
 
@@ -265,16 +273,19 @@ class O_ChatGPT_medium_O:
 
     def fun(self,  model, prompt, initMsg, seed):
         install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
-
+        #import openai  # Import the OpenAI module
+        from openai import OpenAI
         # Get the API key from the file
         api_key = get_api_key()
 
-        openai.api_key = api_key  # Set the API key for the OpenAI module
-
+        #openai.api_key = api_key  # Set the API key for the OpenAI module
+        client = OpenAI(
+            # This is the default and can be omitted
+            api_key=api_key,
+        )
         # Create a chat completion using the OpenAI module
         try:
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": initMsg},
@@ -282,7 +293,7 @@ class O_ChatGPT_medium_O:
                 ]
             )
         except:  # sometimes it fails first time to connect to server
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=[
                     {"role": "user", "content": initMsg},
@@ -290,7 +301,7 @@ class O_ChatGPT_medium_O:
                 ]
             )
         # Get the answer from the chat completion
-        answer = completion["choices"][0]["message"]["content"]
+        answer = completion.choices[0].message.content
         return (answer,)  # Return the answer as a string
 
 
@@ -308,21 +319,23 @@ class load_openAI_O:
             "required": {
             }
         }
-    RETURN_TYPES = ("OPENAI",)  # Define the return type of the node
+    RETURN_TYPES = ("CLIENT",)  # Define the return type of the node
     FUNCTION = "fun"  # Define the function name for the node
     CATEGORY = "O/OpenAI/Advanced"  # Define the category for the node
 
     def fun(self):
         install_openai()  # Install the OpenAI module if not already installed
-        import openai  # Import the OpenAI module
-
+        from openai import OpenAI
         # Get the API key from the file
         api_key = get_api_key()
-        openai.api_key = api_key  # Set the API key for the OpenAI module
-
+        client = OpenAI(
+                    # This is the default and can be omitted
+                    api_key=api_key,
+                )
+        
         return (
             {
-                "openai": openai,  # Return openAI model
+                "client": client,  # Return openAI model
             },
         )
 # region ChatGPT
@@ -394,7 +407,7 @@ class openAi_chat_completion_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "openai": ("OPENAI", ),
+                "client": ("CLIENT", ),
                 # "model": ("STRING", {"multiline": False, "default": "gpt-3.5-turbo"}),
                 "model": (get_gpt_models(), {"default": "gpt-3.5-turbo"}),
                 "messages": ("OPENAI_CHAT_MESSAGES", ),
@@ -410,21 +423,21 @@ class openAi_chat_completion_O:
     # Define the category for the node
     CATEGORY = "O/OpenAI/Advanced/ChatGPT"
 
-    def fun(self, openai, model, messages, seed):
+    def fun(self, client, model, messages, seed):
         # Create a chat completion using the OpenAI module
-        openai = openai["openai"]
+        client = client["client"]
         try:
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=messages["messages"]
             )
         except:  # sometimes it fails first time to connect to server
-            completion = openai.ChatCompletion.create(
+            completion = client.chat.completions.create(
                 model=model,
                 messages=messages["messages"]
             )
         # Get the answer from the chat completion
-        content = completion["choices"][0]["message"]["content"]
+        content = completion.choices[0].message.content
         return (
             content,  # Return the answer as a string
             completion,  # Return the chat completion
@@ -490,7 +503,7 @@ class openAi_Image_create_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "openai": ("OPENAI", ),
+                "client": ("CLIENT", ),
                 "prompt": ("STRING", {"multiline": True}),
                 "number": ("INT", {"default": 1, "min": 1, "max": 10,  "step": 1}),
                 "size": (["256x256", "512x512", "1024x1024"], {"default": "256x256"}),
@@ -506,15 +519,15 @@ class openAi_Image_create_O:
     # Define the category for the node
     CATEGORY = "O/OpenAI/Advanced/Image"
 
-    def fun(self, openai, prompt, number, size, seed):
+    def fun(self, client, prompt, number, size, seed):
         # Create a chat completion using the OpenAI module
-        openai = openai["openai"]
+        client = client["client"]
         prompt = prompt
         number = 1
 
         imageURL = ""
         try:
-            imagesURLS = openai.Image.create(
+            imagesURLS = client.images.generate(
                 prompt=prompt,
                 n=number,
                 size=size
@@ -547,7 +560,7 @@ class openAi_Image_Edit_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "openai": ("OPENAI", ),
+                "client": ("CLIENT", ),
                 "image": ("IMAGE",),
                 "prompt": ("STRING", {"multiline": True}),
                 "number": ("INT", {"default": 1, "min": 1, "max": 10,  "step": 1}),
@@ -564,9 +577,9 @@ class openAi_Image_Edit_O:
     # Define the category for the node
     CATEGORY = "O/OpenAI/Advanced/Image"
 
-    def fun(self, openai, image, prompt, number, size, seed):
+    def fun(self, client, image, prompt, number, size, seed):
         # Create a chat completion using the OpenAI module
-        openai = openai["openai"]
+        client = client["client"]
         prompt = prompt
         number = 1
 
@@ -594,7 +607,7 @@ class openAi_Image_Edit_O:
 
         imageURL = ""
         try:
-            imagesURLS = openai.Image.create_edit(
+            imagesURLS = client.images.edit(
                 image=binary_image,
                 mask=binary_mask,
                 prompt=prompt,
@@ -630,7 +643,7 @@ class openAi_Image_variation_O:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "openai": ("OPENAI", ),
+                "client": ("CLIENT", ),
                 "image": ("IMAGE",),
                 "number": ("INT", {"default": 1, "min": 1, "max": 10,  "step": 1}),
                 "size": (["256x256", "512x512", "1024x1024"], {"default": "256x256"}),
@@ -646,9 +659,9 @@ class openAi_Image_variation_O:
     # Define the category for the node
     CATEGORY = "O/OpenAI/Advanced/Image"
 
-    def fun(self, openai, image, number, size, seed):
+    def fun(self, client, image, number, size, seed):
         # Create a chat completion using the OpenAI module
-        openai = openai["openai"]
+        client = client["client"]
         number = 1
 
     # Convert PyTorch tensor to NumPy array
@@ -662,7 +675,7 @@ class openAi_Image_variation_O:
 
         imageURL = " "
         try:
-            imagesURLS = openai.Image.create_variation(
+            imagesURLS = client.images.create_variation(
                 image=binary_image,
                 n=number,
                 size=size
